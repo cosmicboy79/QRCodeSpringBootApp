@@ -1,2 +1,3 @@
 # QRCodeSpringBootApp
-Spring Boot App of a QR Code generator
+
+Spring Boot App of a QR Code generator.
