@@ -1,0 +1,68 @@
+openapi: 3.0.4
+info:
+  title: QRCode REST OpenAPI 3.0 Specification
+  description: REST Specification used in the QRCode Spring Boot App
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.12
+servers:
+  - url: http://qrcodeapp.springboot.edu/api/v1
+tags:
+  - name: QRCode
+    description: Operation related to QR Code generation
+paths:
+  /qrcode/generate:
+    post:
+      tags:
+        - QRCode
+      summary: Generates QR Code.
+      description: Generates QR Code as array of bytes for the given URL.
+      operationId: qrcodeGenerate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputURL'
+            example:
+              url: "https://pdfobject.com/pdf/sample.pdf"
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BytesArray'
+              example:
+                output: [34, 56, 23, 26, 11, 104, 0, 99]
+        '400':
+          description: Invalid status value
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                message: "Not able to generate QR Code"
+components:
+  schemas:
+    InputURL:
+      type: object
+      properties:
+        url:
+          type: string
+    BytesArray:
+      type: object
+      properties:
+        output:
+          type: array
+          items:
+            type: integer
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
