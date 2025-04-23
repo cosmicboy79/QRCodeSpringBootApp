@@ -57,7 +57,7 @@ public class Controller {
     BytesArray result = new BytesArray();
     result.setOutput(output);
 
-    createTestImage(output);
+    //createTestImage(output);
 
     return result;
   }
