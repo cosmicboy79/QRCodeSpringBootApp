@@ -22,16 +22,32 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.rest;
+package edu.training.qrcodeapp.rest.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootApplication
-public class QRCodeGeneratorRestApp {
+import edu.training.qrcodeapp.rest.service.Generator;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-  public static void main(String[] args) {
+@WebMvcTest(controllers = Controller.class)
+public class TestController {
 
-    SpringApplication.run(QRCodeGeneratorRestApp.class, args);
+  @MockitoBean
+  Generator generatorService;
+  @Autowired
+  private MockMvc mockMvc;
+
+  @Test
+  public void generateQrCode() throws Exception {
+
+    when(generatorService.generateQRCodeBytes(anyString())).thenReturn(new byte[]{34, 56, 102});
+    mockMvc.perform(post("/qrcode/generate")).andExpect(status().isOk());
   }
 }

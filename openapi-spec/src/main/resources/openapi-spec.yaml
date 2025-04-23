@@ -56,9 +56,8 @@ components:
       type: object
       properties:
         output:
-          type: array
-          items:
-            type: integer
+          type: string
+          format: byte
     Error:
       type: object
       properties:

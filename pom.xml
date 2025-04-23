@@ -12,7 +12,6 @@
 
     <properties>
         <!-- basic project properties -->
-        <revision>0.0.1-SNAPSHOT</revision>
         <java.version>21</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -31,7 +30,7 @@
 
     <groupId>edu.training.springboot</groupId>
     <artifactId>qrcodeapp</artifactId>
-    <version>${revision}</version>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>QRCodeSpringBootApp</name>
@@ -87,6 +86,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring.boot.version}</version>
             </dependency>
             <dependency>

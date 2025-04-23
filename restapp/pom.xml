@@ -7,13 +7,19 @@
     <parent>
         <groupId>edu.training.springboot</groupId>
         <artifactId>qrcodeapp</artifactId>
-        <version>${revision}</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>restapp</artifactId>
     <description>REST layer</description>
 
     <dependencies>
+        <dependency>
+            <groupId>edu.training.springboot</groupId>
+            <artifactId>openapi-spec</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- 3PP's -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
@@ -25,6 +31,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
