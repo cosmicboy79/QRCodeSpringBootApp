@@ -1,34 +1,37 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2025 Cristiano Silva
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package edu.training.qrcodeapp.rest;
 
-import com.google.zxing.WriterException;
-import edu.training.qrcodeapp.rest.service.Generator;
-import java.io.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-//public class QRCodeGeneratorRestApp implements CommandLineRunner {
 public class QRCodeGeneratorRestApp {
 
-  @Autowired
-  Generator generator;
-
   public static void main(String[] args) {
+
     SpringApplication.run(QRCodeGeneratorRestApp.class, args);
-  }
-
-  //@Override
-  public void run(String... args) {
-    String url = "https://drive.google.com/file/d/14nwJ13Q4m4nNrQ0bveye8xKdn9cq4RQx/view?usp=share_link";
-    String fileName = "qrcode.png";
-
-    try {
-      byte[] output = generator.generateQRCodeBytes(url);
-      System.out.println("QR Code generated and saved to: " + fileName);
-    } catch (WriterException | IOException e) {
-      System.err.println("Error generating QR Code: " + e.getMessage());
-    }
   }
 }
