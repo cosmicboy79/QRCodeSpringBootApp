@@ -22,43 +22,23 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.rest.service.exception;
+package edu.training.qrcodeapp.rest.service.validator;
 
-public class ExceptionOnGeneration extends Exception {
+import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration.ErrorCode;
 
-  private String message;
+public enum InputValidator {
 
-  public ExceptionOnGeneration(Throwable cause) {
+  INSTANCE;
 
-    super(cause);
-    this.message = cause.getMessage();
-  }
+  public void validate(String data) throws ExceptionOnGeneration {
 
-  public ExceptionOnGeneration(ErrorCode errorCode) {
-
-    this.message = errorCode.getErrorDescription();
-  }
-
-  @Override
-  public String getMessage() {
-
-    return message;
-  }
-
-  public enum ErrorCode {
-    NULL_INPUT("input is null"),
-    EMPTY_INPUT("input is empty");
-
-    private final String errorDescription;
-
-    ErrorCode(String errorDescription) {
-
-      this.errorDescription = errorDescription;
+    if (data == null) {
+      throw new ExceptionOnGeneration(ErrorCode.NULL_INPUT);
     }
 
-    public String getErrorDescription() {
-
-      return errorDescription;
+    if (data.isBlank()) {
+      throw new ExceptionOnGeneration((ErrorCode.EMPTY_INPUT));
     }
   }
 }
