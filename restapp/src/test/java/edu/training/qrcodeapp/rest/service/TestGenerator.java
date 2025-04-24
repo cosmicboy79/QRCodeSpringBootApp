@@ -24,60 +24,28 @@
 
 package edu.training.qrcodeapp.rest.service;
 
-import static edu.training.qrcodeapp.rest.service.Generator.DIMENSION;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.atMostOnce;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Writer;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import java.io.IOException;
-import org.junit.jupiter.api.BeforeEach;
+import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class TestGenerator {
 
-  @Mock
-  private BitMatrix bitMatrix;
-
-  @Mock
-  private Writer qrCodeWriter;
-
-  @Spy
+  @Autowired
   private Generator generator;
 
-  @BeforeEach
-  public void setup() throws WriterException {
-
-    when(qrCodeWriter.encode("some URL to a file", BarcodeFormat.QR_CODE, DIMENSION,
-        DIMENSION)).thenReturn(
-        bitMatrix);
-
-    generator.setWriter(qrCodeWriter);
-  }
-
   @Test
-  public void testBytesGeneration() throws WriterException, IOException {
+  public void testBytesGeneration() throws ExceptionOnGeneration {
 
-    byte[] bytes = new byte[]{45, 32, 89};
     String inputData = "some URL to a file";
-
-    doReturn(bytes).when(generator).createBytes(bitMatrix);
 
     byte[] generatedQRCode = generator.generateQRCodeBytes(inputData);
 
-    assertEquals(generatedQRCode, bytes);
-    verify(qrCodeWriter, atMostOnce()).encode(inputData, BarcodeFormat.QR_CODE, DIMENSION,
-        DIMENSION);
-    verify(generator, atMostOnce()).createBytes(bitMatrix);
+    assertNotNull(generatedQRCode);
+    assertTrue(generatedQRCode.length > 0);
   }
 }
