@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.rest.service;
+package edu.training.qrcodeapp.rest.service.exception;
 
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
+public class ExceptionOnGeneration extends Exception {
 
-public interface Generator {
+  public ExceptionOnGeneration(Throwable cause) {
 
-  byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration;
+    super(cause);
+  }
 }

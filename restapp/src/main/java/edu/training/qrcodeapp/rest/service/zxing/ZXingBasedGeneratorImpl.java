@@ -22,56 +22,50 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.rest.controller;
+package edu.training.qrcodeapp.rest.service.zxing;
 
-import edu.training.qrcodeapp.model.BytesArray;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Writer;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import edu.training.qrcodeapp.rest.service.Generator;
 import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
-@RestController()
-public class Controller {
+@Component
+public class ZXingBasedGeneratorImpl implements Generator {
 
-  @Autowired
-  private Generator generatorService;
+  static final Integer DIMENSION = 300;
 
-  @PostMapping("/qrcode/generate")
-  public BytesArray getQRCodeBytes() {
+  private final Writer qrCodeWriter = new QRCodeWriter();
 
-    byte[] output;
+  public byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration {
+
+    byte[] result;
 
     try {
-      output = generatorService.generateQRCodeBytes("https://pdfobject.com/pdf/sample.pdf");
+      BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, DIMENSION, DIMENSION);
+      result = createBytes(bitMatrix);
     }
-    catch (ExceptionOnGeneration e) {
-      // TODO create proper error response
-      throw new RuntimeException(e);
+    catch (WriterException | IOException e) {
+      throw new ExceptionOnGeneration(e);
     }
-
-    // TODO validate that generated output is not null
-
-    BytesArray result = new BytesArray();
-    result.setOutput(output);
-
-    //createTestImage(output);
 
     return result;
   }
 
-  /**
-   * Temporary test method that will be removed soon.
-   */
-  private void createTestImage(byte[] output) {
+  private byte[] createBytes(BitMatrix bitMatrix) throws IOException {
 
-    try (FileOutputStream fos = new FileOutputStream("qrcode.png")) {
-      fos.write(output);
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+
+    MatrixToImageWriter.writeToStream(bitMatrix, "PNG", byteArray, new MatrixToImageConfig());
+
+    return byteArray.toByteArray();
   }
+
 }
