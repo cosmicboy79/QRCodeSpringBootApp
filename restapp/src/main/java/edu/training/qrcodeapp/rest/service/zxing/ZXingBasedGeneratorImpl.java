@@ -33,6 +33,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import edu.training.qrcodeapp.rest.service.Generator;
 import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.service.validator.InputValidator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.springframework.stereotype.Component;
@@ -46,10 +47,12 @@ public class ZXingBasedGeneratorImpl implements Generator {
 
   public byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration {
 
+    InputValidator.INSTANCE.validate(data);
+
     byte[] result;
 
     try {
-      BitMatrix bitMatrix = qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, DIMENSION, DIMENSION);
+      BitMatrix bitMatrix = encodeInputData(data);
       result = createBytes(bitMatrix);
     }
     catch (WriterException | IOException e) {
@@ -59,7 +62,12 @@ public class ZXingBasedGeneratorImpl implements Generator {
     return result;
   }
 
-  private byte[] createBytes(BitMatrix bitMatrix) throws IOException {
+  BitMatrix encodeInputData(String data) throws WriterException {
+
+    return qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, DIMENSION, DIMENSION);
+  }
+
+  byte[] createBytes(BitMatrix bitMatrix) throws IOException {
 
     ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
 
@@ -67,5 +75,4 @@ public class ZXingBasedGeneratorImpl implements Generator {
 
     return byteArray.toByteArray();
   }
-
 }
