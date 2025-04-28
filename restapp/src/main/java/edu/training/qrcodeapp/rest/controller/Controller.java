@@ -25,31 +25,38 @@
 package edu.training.qrcodeapp.rest.controller;
 
 import edu.training.qrcodeapp.model.BytesArray;
+import edu.training.qrcodeapp.model.Error;
+import edu.training.qrcodeapp.model.InputURL;
 import edu.training.qrcodeapp.rest.service.Generator;
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
+@RequestMapping("/qrcode")
 public class Controller {
 
   @Autowired
   private Generator generatorService;
 
-  @PostMapping("/qrcode/generate")
-  public BytesArray getQRCodeBytes() {
+  @PostMapping("/generate")
+  public ResponseEntity<?> getQRCodeBytes(@RequestBody InputURL inputURL) {
 
     byte[] output;
 
     try {
-      output = generatorService.generateQRCodeBytes("https://pdfobject.com/pdf/sample.pdf");
+      output = generatorService.generateQRCodeBytes(inputURL.getUrl());
     }
     catch (ExceptionOnGeneration e) {
-      // TODO create proper error response
-      throw new RuntimeException(e);
+      return new ResponseEntity<>(createError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     // TODO validate that generated output is not null
@@ -59,7 +66,15 @@ public class Controller {
 
     //createTestImage(output);
 
-    return result;
+    return new ResponseEntity<>(result, HttpStatus.CREATED);
+  }
+
+  @NotNull
+  private Error createError(String message) {
+
+    Error error = new Error();
+    error.setMessage(message);
+    return error;
   }
 
   /**

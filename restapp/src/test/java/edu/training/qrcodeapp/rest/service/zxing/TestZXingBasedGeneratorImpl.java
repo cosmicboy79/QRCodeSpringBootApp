@@ -32,7 +32,7 @@ import static org.mockito.Mockito.mock;
 
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

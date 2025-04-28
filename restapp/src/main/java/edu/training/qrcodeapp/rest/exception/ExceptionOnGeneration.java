@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.rest.service.exception;
+package edu.training.qrcodeapp.rest.exception;
 
 public class ExceptionOnGeneration extends Exception {
 
@@ -46,8 +46,9 @@ public class ExceptionOnGeneration extends Exception {
   }
 
   public enum ErrorCode {
-    NULL_INPUT("input is null"),
-    EMPTY_INPUT("input is empty");
+
+    NULL_INPUT("Input URL is null"),
+    EMPTY_INPUT("Input URL is empty");
 
     private final String errorDescription;
 

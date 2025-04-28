@@ -24,7 +24,7 @@
 
 package edu.training.qrcodeapp.rest.service;
 
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 
 public interface Generator {
 

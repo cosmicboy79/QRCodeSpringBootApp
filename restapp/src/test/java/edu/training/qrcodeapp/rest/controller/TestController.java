@@ -25,10 +25,14 @@
 package edu.training.qrcodeapp.rest.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
 import edu.training.qrcodeapp.rest.service.Generator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +49,44 @@ public class TestController {
   private MockMvc mockMvc;
 
   @Test
-  public void generateQrCode() throws Exception {
+  public void testGenerateQrCode() throws Exception {
 
     when(generatorService.generateQRCodeBytes(anyString())).thenReturn(new byte[]{34, 56, 102});
-    mockMvc.perform(post("/qrcode/generate")).andExpect(status().isOk());
+
+    InputURL inputURL = new InputURL();
+    inputURL.setUrl("https://pdfobject.com/pdf/sample.pdf");
+
+    mockMvc.perform(
+            post("/qrcode/generate").contentType("application/json").content(inputURL.toJson()))
+        .andExpect(status().isCreated());
+  }
+
+  @Test
+  public void testBadRequestWhenEmptyInputURL() throws Exception {
+
+    // TODO how to call the real service?
+    // TODO how to test the error message?
+    doThrow(new ExceptionOnGeneration(ErrorCode.EMPTY_INPUT)).when(generatorService)
+        .generateQRCodeBytes(anyString());
+
+    InputURL inputURL = new InputURL();
+    inputURL.setUrl("");
+
+    mockMvc.perform(
+            post("/qrcode/generate").contentType("application/json").content(inputURL.toJson()))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void testBadRequestWhenNullInputURL() throws Exception {
+
+    // TODO how to call the real service?
+    // TODO how to test the error message?
+    doThrow(new ExceptionOnGeneration(ErrorCode.EMPTY_INPUT)).when(generatorService)
+        .generateQRCodeBytes(anyString());
+
+    mockMvc.perform(
+            post("/qrcode/generate").contentType("application/json"))
+        .andExpect(status().isBadRequest());
   }
 }
