@@ -27,7 +27,7 @@ package edu.training.qrcodeapp.rest.controller;
 import edu.training.qrcodeapp.model.BytesArray;
 import edu.training.qrcodeapp.model.Error;
 import edu.training.qrcodeapp.model.InputURL;
-import edu.training.qrcodeapp.rest.service.Generator;
+import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,10 +42,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping("/qrcode")
-public class Controller {
+public class QRCodeGeneratorController {
 
   @Autowired
-  private Generator generatorService;
+  private QRCodeGeneratorService QRCodeGeneratorServiceService;
 
   @PostMapping("/generate")
   public ResponseEntity<?> getQRCodeBytes(@RequestBody InputURL inputURL) {
@@ -53,7 +53,7 @@ public class Controller {
     byte[] output;
 
     try {
-      output = generatorService.generateQRCodeBytes(inputURL.getUrl());
+      output = QRCodeGeneratorServiceService.generateQRCodeBytes(inputURL.getUrl());
     }
     catch (ExceptionOnGeneration e) {
       return new ResponseEntity<>(createError(e.getMessage()), HttpStatus.BAD_REQUEST);

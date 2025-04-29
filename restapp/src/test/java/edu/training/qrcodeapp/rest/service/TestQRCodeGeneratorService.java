@@ -36,15 +36,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class TestGenerator {
+public class TestQRCodeGeneratorService {
 
   @Autowired
-  private Generator generator;
+  private QRCodeGeneratorService generatorService;
 
   @Test
   public void testBytesGeneration() throws ExceptionOnGeneration {
 
-    byte[] generatedQRCode = generator.generateQRCodeBytes("some URL to a file");
+    byte[] generatedQRCode = generatorService.generateQRCodeBytes("some URL to a file");
 
     assertNotNull(generatedQRCode);
     assertTrue(generatedQRCode.length > 0);
@@ -54,7 +54,7 @@ public class TestGenerator {
   public void testInputIsNull() throws ExceptionOnGeneration {
 
     Exception expectedException = assertThrows(ExceptionOnGeneration.class, () -> {
-      generator.generateQRCodeBytes(null);
+      generatorService.generateQRCodeBytes(null);
     });
 
     assertEquals(expectedException.getMessage(), ErrorCode.NULL_INPUT.getErrorDescription());
@@ -64,7 +64,7 @@ public class TestGenerator {
   public void testInputIsEmpty() throws ExceptionOnGeneration {
 
     Exception expectedException = assertThrows(ExceptionOnGeneration.class, () -> {
-      generator.generateQRCodeBytes("");
+      generatorService.generateQRCodeBytes("");
     });
 
     assertEquals(expectedException.getMessage(), ErrorCode.EMPTY_INPUT.getErrorDescription());

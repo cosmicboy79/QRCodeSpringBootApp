@@ -24,27 +24,33 @@
 
 package edu.training.qrcodeapp.rest.controller;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import edu.training.qrcodeapp.model.InputURL;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
-import edu.training.qrcodeapp.rest.service.Generator;
+import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = Controller.class)
-public class TestController {
+@WebMvcTest(controllers = QRCodeGeneratorController.class)
+public class TestQRCodeGeneratorController {
+
+  private static final String QRCODE_GENERATION_PATH = "/qrcode/generate";
 
   @MockitoBean
-  Generator generatorService;
+  QRCodeGeneratorService generatorService;
   @Autowired
   private MockMvc mockMvc;
 
@@ -57,36 +63,40 @@ public class TestController {
     inputURL.setUrl("https://pdfobject.com/pdf/sample.pdf");
 
     mockMvc.perform(
-            post("/qrcode/generate").contentType("application/json").content(inputURL.toJson()))
-        .andExpect(status().isCreated());
+            post(QRCODE_GENERATION_PATH).contentType(MediaType.APPLICATION_JSON)
+                .content(inputURL.toJson()))
+        .andExpect(status().isCreated())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.output", is("Ijhm")));
   }
 
   @Test
   public void testBadRequestWhenEmptyInputURL() throws Exception {
 
-    // TODO how to call the real service?
-    // TODO how to test the error message?
-    doThrow(new ExceptionOnGeneration(ErrorCode.EMPTY_INPUT)).when(generatorService)
-        .generateQRCodeBytes(anyString());
-
     InputURL inputURL = new InputURL();
     inputURL.setUrl("");
 
+    doThrow(new ExceptionOnGeneration(ErrorCode.EMPTY_INPUT)).when(generatorService)
+        .generateQRCodeBytes(inputURL.getUrl());
+
     mockMvc.perform(
-            post("/qrcode/generate").contentType("application/json").content(inputURL.toJson()))
-        .andExpect(status().isBadRequest());
+            post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputURL.toJson()))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", is(ErrorCode.EMPTY_INPUT.getErrorDescription())));
   }
 
   @Test
   public void testBadRequestWhenNullInputURL() throws Exception {
 
-    // TODO how to call the real service?
-    // TODO how to test the error message?
-    doThrow(new ExceptionOnGeneration(ErrorCode.EMPTY_INPUT)).when(generatorService)
-        .generateQRCodeBytes(anyString());
+    InputURL inputURL = new InputURL();
+    inputURL.setUrl(null);
+
+    doThrow(new ExceptionOnGeneration(ErrorCode.NULL_INPUT)).when(generatorService)
+        .generateQRCodeBytes(inputURL.getUrl());
 
     mockMvc.perform(
-            post("/qrcode/generate").contentType("application/json"))
-        .andExpect(status().isBadRequest());
+            post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputURL.toJson()))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message", is(ErrorCode.NULL_INPUT.getErrorDescription())));
   }
 }

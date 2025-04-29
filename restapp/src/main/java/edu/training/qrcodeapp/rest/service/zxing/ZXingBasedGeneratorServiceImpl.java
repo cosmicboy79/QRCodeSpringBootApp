@@ -31,7 +31,7 @@ import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import edu.training.qrcodeapp.rest.service.Generator;
+import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.service.validator.InputValidator;
 import java.io.ByteArrayOutputStream;
@@ -39,7 +39,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ZXingBasedGeneratorImpl implements Generator {
+public class ZXingBasedGeneratorServiceImpl implements QRCodeGeneratorService {
 
   static final Integer DIMENSION = 300;
 
