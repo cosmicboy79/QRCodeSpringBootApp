@@ -27,10 +27,8 @@ package edu.training.qrcodeapp.rest.controller;
 import edu.training.qrcodeapp.model.BytesArray;
 import edu.training.qrcodeapp.model.Error;
 import edu.training.qrcodeapp.model.InputURL;
-import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,8 +62,6 @@ public class QRCodeGeneratorController {
     BytesArray result = new BytesArray();
     result.setOutput(output);
 
-    //createTestImage(output);
-
     return new ResponseEntity<>(result, HttpStatus.CREATED);
   }
 
@@ -75,18 +71,5 @@ public class QRCodeGeneratorController {
     Error error = new Error();
     error.setMessage(message);
     return error;
-  }
-
-  /**
-   * Temporary test method that will be removed soon.
-   */
-  private void createTestImage(byte[] output) {
-
-    try (FileOutputStream fos = new FileOutputStream("qrcode.png")) {
-      fos.write(output);
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 }
