@@ -24,8 +24,8 @@
 
 package edu.training.qrcodeapp.rest.service.validator;
 
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration.ErrorCode;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
 
 public enum InputValidator {
 

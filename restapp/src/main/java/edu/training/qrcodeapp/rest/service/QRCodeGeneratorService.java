@@ -22,43 +22,11 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.rest.service.exception;
+package edu.training.qrcodeapp.rest.service;
 
-public class ExceptionOnGeneration extends Exception {
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 
-  private String message;
+public interface QRCodeGeneratorService {
 
-  public ExceptionOnGeneration(Throwable cause) {
-
-    super(cause);
-    this.message = cause.getMessage();
-  }
-
-  public ExceptionOnGeneration(ErrorCode errorCode) {
-
-    this.message = errorCode.getErrorDescription();
-  }
-
-  @Override
-  public String getMessage() {
-
-    return message;
-  }
-
-  public enum ErrorCode {
-    NULL_INPUT("input is null"),
-    EMPTY_INPUT("input is empty");
-
-    private final String errorDescription;
-
-    ErrorCode(String errorDescription) {
-
-      this.errorDescription = errorDescription;
-    }
-
-    public String getErrorDescription() {
-
-      return errorDescription;
-    }
-  }
+  byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration;
 }

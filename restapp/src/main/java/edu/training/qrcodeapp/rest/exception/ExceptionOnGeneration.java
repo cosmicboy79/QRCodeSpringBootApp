@@ -22,11 +22,44 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.rest.service;
+package edu.training.qrcodeapp.rest.exception;
 
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
+public class ExceptionOnGeneration extends Exception {
 
-public interface Generator {
+  private String message;
 
-  byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration;
+  public ExceptionOnGeneration(Throwable cause) {
+
+    super(cause);
+    this.message = cause.getMessage();
+  }
+
+  public ExceptionOnGeneration(ErrorCode errorCode) {
+
+    this.message = errorCode.getErrorDescription();
+  }
+
+  @Override
+  public String getMessage() {
+
+    return message;
+  }
+
+  public enum ErrorCode {
+
+    NULL_INPUT("Input URL is null"),
+    EMPTY_INPUT("Input URL is empty");
+
+    private final String errorDescription;
+
+    ErrorCode(String errorDescription) {
+
+      this.errorDescription = errorDescription;
+    }
+
+    public String getErrorDescription() {
+
+      return errorDescription;
+    }
+  }
 }

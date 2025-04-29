@@ -25,31 +25,36 @@
 package edu.training.qrcodeapp.rest.controller;
 
 import edu.training.qrcodeapp.model.BytesArray;
-import edu.training.qrcodeapp.rest.service.Generator;
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import edu.training.qrcodeapp.model.Error;
+import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
-public class Controller {
+@RequestMapping("/qrcode")
+public class QRCodeGeneratorController {
 
   @Autowired
-  private Generator generatorService;
+  private QRCodeGeneratorService generatorService;
 
-  @PostMapping("/qrcode/generate")
-  public BytesArray getQRCodeBytes() {
+  @PostMapping("/generate")
+  public ResponseEntity<?> getQRCodeBytes(@RequestBody InputURL inputURL) {
 
     byte[] output;
 
     try {
-      output = generatorService.generateQRCodeBytes("https://pdfobject.com/pdf/sample.pdf");
+      output = generatorService.generateQRCodeBytes(inputURL.getUrl());
     }
     catch (ExceptionOnGeneration e) {
-      // TODO create proper error response
-      throw new RuntimeException(e);
+      return new ResponseEntity<>(createError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     // TODO validate that generated output is not null
@@ -57,21 +62,14 @@ public class Controller {
     BytesArray result = new BytesArray();
     result.setOutput(output);
 
-    //createTestImage(output);
-
-    return result;
+    return new ResponseEntity<>(result, HttpStatus.CREATED);
   }
 
-  /**
-   * Temporary test method that will be removed soon.
-   */
-  private void createTestImage(byte[] output) {
+  @NotNull
+  private Error createError(String message) {
 
-    try (FileOutputStream fos = new FileOutputStream("qrcode.png")) {
-      fos.write(output);
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    Error error = new Error();
+    error.setMessage(message);
+    return error;
   }
 }

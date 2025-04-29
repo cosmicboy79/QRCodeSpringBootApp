@@ -32,7 +32,7 @@ import static org.mockito.Mockito.mock;
 
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import edu.training.qrcodeapp.rest.service.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,10 +40,10 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class TestZXingBasedGeneratorImpl {
+public class TestZXingBasedQRCodeGeneratorServiceImpl {
 
   @Spy
-  ZXingBasedGeneratorImpl generator;
+  ZXingBasedGeneratorServiceImpl generatorService;
 
   @Test
   public void testExceptionOnEncoding() throws WriterException {
@@ -51,10 +51,10 @@ public class TestZXingBasedGeneratorImpl {
     String errorMessage = "some crazy error when encoding";
     String inputData = "some URL to a file";
 
-    doThrow(new WriterException(errorMessage)).when(generator).encodeInputData(inputData);
+    doThrow(new WriterException(errorMessage)).when(generatorService).encodeInputData(inputData);
 
     Exception expectedException = assertThrows(ExceptionOnGeneration.class,
-        () -> generator.generateQRCodeBytes(inputData));
+        () -> generatorService.generateQRCodeBytes(inputData));
 
     assertEquals(errorMessage, expectedException.getMessage());
   }
@@ -67,11 +67,11 @@ public class TestZXingBasedGeneratorImpl {
 
     BitMatrix bitMatrix = mock(BitMatrix.class);
 
-    doReturn(bitMatrix).when(generator).encodeInputData(inputData);
-    doThrow(new IOException(errorMessage)).when(generator).createBytes(bitMatrix);
+    doReturn(bitMatrix).when(generatorService).encodeInputData(inputData);
+    doThrow(new IOException(errorMessage)).when(generatorService).createBytes(bitMatrix);
 
     Exception expectedException = assertThrows(ExceptionOnGeneration.class,
-        () -> generator.generateQRCodeBytes(inputData));
+        () -> generatorService.generateQRCodeBytes(inputData));
 
     assertEquals(errorMessage, expectedException.getMessage());
   }
