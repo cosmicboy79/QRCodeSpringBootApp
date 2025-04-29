@@ -51,6 +51,7 @@ public class TestQRCodeGeneratorController {
 
   @MockitoBean
   QRCodeGeneratorService generatorService;
+
   @Autowired
   private MockMvc mockMvc;
 

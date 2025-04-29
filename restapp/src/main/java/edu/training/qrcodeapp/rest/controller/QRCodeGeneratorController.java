@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QRCodeGeneratorController {
 
   @Autowired
-  private QRCodeGeneratorService QRCodeGeneratorServiceService;
+  private QRCodeGeneratorService generatorService;
 
   @PostMapping("/generate")
   public ResponseEntity<?> getQRCodeBytes(@RequestBody InputURL inputURL) {
@@ -51,7 +51,7 @@ public class QRCodeGeneratorController {
     byte[] output;
 
     try {
-      output = QRCodeGeneratorServiceService.generateQRCodeBytes(inputURL.getUrl());
+      output = generatorService.generateQRCodeBytes(inputURL.getUrl());
     }
     catch (ExceptionOnGeneration e) {
       return new ResponseEntity<>(createError(e.getMessage()), HttpStatus.BAD_REQUEST);
