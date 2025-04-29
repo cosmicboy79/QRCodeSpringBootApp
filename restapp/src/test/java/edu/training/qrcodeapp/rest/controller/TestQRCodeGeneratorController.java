@@ -24,10 +24,12 @@
 
 package edu.training.qrcodeapp.rest.controller;
 
+import static edu.training.qrcodeapp.rest.controller.QRCodeGeneratorController.SUCCESS_STATUS;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -48,12 +50,21 @@ import org.springframework.test.web.servlet.MockMvc;
 public class TestQRCodeGeneratorController {
 
   private static final String QRCODE_GENERATION_PATH = "/qrcode/generate";
+  private static final String QRCODE_HEALTH_PATH = "/qrcode/health";
 
   @MockitoBean
   QRCodeGeneratorService generatorService;
 
   @Autowired
   private MockMvc mockMvc;
+
+  @Test
+  public void testHealthStatus() throws Exception {
+
+    mockMvc.perform(get(QRCODE_HEALTH_PATH).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status", is(SUCCESS_STATUS)));
+  }
 
   @Test
   public void testGenerateQrCode() throws Exception {

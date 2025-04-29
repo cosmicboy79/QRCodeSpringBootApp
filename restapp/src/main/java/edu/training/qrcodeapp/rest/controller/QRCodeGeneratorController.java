@@ -27,12 +27,14 @@ package edu.training.qrcodeapp.rest.controller;
 import edu.training.qrcodeapp.model.BytesArray;
 import edu.training.qrcodeapp.model.Error;
 import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.model.Status;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,8 +44,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/qrcode")
 public class QRCodeGeneratorController {
 
+  static final String SUCCESS_STATUS = "OK";
+
   @Autowired
   private QRCodeGeneratorService generatorService;
+
+  @GetMapping("/health")
+  public ResponseEntity<Status> getHealthStatus() {
+
+    Status status = new Status();
+    status.setStatus(SUCCESS_STATUS);
+
+    return new ResponseEntity<>(status, HttpStatus.OK);
+  }
 
   @PostMapping("/generate")
   public ResponseEntity<?> getQRCodeBytes(@RequestBody InputURL inputURL) {
@@ -56,8 +69,6 @@ public class QRCodeGeneratorController {
     catch (ExceptionOnGeneration e) {
       return new ResponseEntity<>(createError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
-
-    // TODO validate that generated output is not null
 
     BytesArray result = new BytesArray();
     result.setOutput(output);
