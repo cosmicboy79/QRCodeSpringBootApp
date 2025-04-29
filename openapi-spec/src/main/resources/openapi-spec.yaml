@@ -12,6 +12,22 @@ tags:
   - name: QRCode
     description: Operation related to QR Code generation
 paths:
+  /qrcode/health:
+    get:
+      tags:
+        - QRCode
+      summary: REST health status
+      description: Entrypoint that tests whether the REST is up and running or not.
+      operationId: healthStatus
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+              example:
+                status: "OK"
   /qrcode/generate:
     post:
       tags:
@@ -65,3 +81,10 @@ components:
           type: string
       required:
         - message
+    Status:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
