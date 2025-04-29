@@ -26,8 +26,11 @@ package edu.training.qrcodeapp.rest.controller;
 
 import static edu.training.qrcodeapp.rest.controller.QRCodeGeneratorController.SUCCESS_STATUS;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,6 +43,8 @@ import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
 import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -54,7 +59,8 @@ public class TestQRCodeGeneratorController {
 
   @MockitoBean
   QRCodeGeneratorService generatorService;
-
+  @Captor
+  ArgumentCaptor<String> inputUrlArgumentCaptor;
   @Autowired
   private MockMvc mockMvc;
 
@@ -80,6 +86,8 @@ public class TestQRCodeGeneratorController {
         .andExpect(status().isCreated())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.output", is("Ijhm")));
+
+    checkInputOnExecution(inputURL);
   }
 
   @Test
@@ -95,6 +103,8 @@ public class TestQRCodeGeneratorController {
             post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputURL.toJson()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", is(ErrorCode.EMPTY_INPUT.getErrorDescription())));
+
+    checkInputOnExecution(inputURL);
   }
 
   @Test
@@ -110,5 +120,14 @@ public class TestQRCodeGeneratorController {
             post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputURL.toJson()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", is(ErrorCode.NULL_INPUT.getErrorDescription())));
+
+    checkInputOnExecution(inputURL);
+  }
+
+  private void checkInputOnExecution(InputURL inputURL) throws ExceptionOnGeneration {
+
+    verify(generatorService, atMostOnce()).generateQRCodeBytes(inputUrlArgumentCaptor.capture());
+
+    assertEquals(inputURL.getUrl(), inputUrlArgumentCaptor.getValue());
   }
 }
