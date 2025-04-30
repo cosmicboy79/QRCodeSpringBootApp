@@ -24,6 +24,7 @@
 
 package edu.training.qrcodeapp.rest.service.zxing;
 
+import static edu.training.qrcodeapp.rest.service.zxing.ZXingBasedGeneratorServiceImpl.DEFAULT_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
@@ -51,7 +52,8 @@ public class TestZXingBasedQRCodeGeneratorServiceImpl {
     String errorMessage = "some crazy error when encoding";
     String inputData = "some URL to a file";
 
-    doThrow(new WriterException(errorMessage)).when(generatorService).encodeInputData(inputData);
+    doThrow(new WriterException(errorMessage)).when(generatorService)
+        .encodeInputData(inputData, DEFAULT_SIZE);
 
     Exception expectedException = assertThrows(ExceptionOnGeneration.class,
         () -> generatorService.generateQRCodeBytes(inputData));
@@ -67,7 +69,7 @@ public class TestZXingBasedQRCodeGeneratorServiceImpl {
 
     BitMatrix bitMatrix = mock(BitMatrix.class);
 
-    doReturn(bitMatrix).when(generatorService).encodeInputData(inputData);
+    doReturn(bitMatrix).when(generatorService).encodeInputData(inputData, DEFAULT_SIZE);
     doThrow(new IOException(errorMessage)).when(generatorService).createBytes(bitMatrix);
 
     Exception expectedException = assertThrows(ExceptionOnGeneration.class,

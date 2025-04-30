@@ -28,8 +28,10 @@ import edu.training.qrcodeapp.model.BytesArray;
 import edu.training.qrcodeapp.model.Error;
 import edu.training.qrcodeapp.model.InputURL;
 import edu.training.qrcodeapp.model.Status;
+import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,8 +46,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/qrcode")
 public class QRCodeGeneratorController {
 
-  static final String SUCCESS_STATUS = "OK";
-
   @Autowired
   private QRCodeGeneratorService generatorService;
 
@@ -53,7 +53,7 @@ public class QRCodeGeneratorController {
   public ResponseEntity<Status> getHealthStatus() {
 
     Status status = new Status();
-    status.setStatus(SUCCESS_STATUS);
+    status.setStatus(StatusEnum.ALIVE);
 
     return new ResponseEntity<>(status, HttpStatus.OK);
   }
@@ -64,7 +64,7 @@ public class QRCodeGeneratorController {
     byte[] output;
 
     try {
-      output = generatorService.generateQRCodeBytes(inputURL.getUrl());
+      output = generateOutput(inputURL);
     }
     catch (ExceptionOnGeneration e) {
       return new ResponseEntity<>(createError(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -74,6 +74,15 @@ public class QRCodeGeneratorController {
     result.setOutput(output);
 
     return new ResponseEntity<>(result, HttpStatus.CREATED);
+  }
+
+  private byte[] generateOutput(InputURL inputURL) throws ExceptionOnGeneration {
+
+    if (Objects.isNull(inputURL.getSize())) {
+      return generatorService.generateQRCodeBytes(inputURL.getUrl());
+    }
+
+    return generatorService.generateQRCodeBytes(inputURL.getUrl(), inputURL.getSize());
   }
 
   @NotNull

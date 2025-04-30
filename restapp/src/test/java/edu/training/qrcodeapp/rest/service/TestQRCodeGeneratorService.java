@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
+import edu.training.qrcodeapp.rest.service.validator.InputValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,13 +39,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class TestQRCodeGeneratorService {
 
+  private static final String INPUT_URL = "some URL to a file";
+
   @Autowired
   private QRCodeGeneratorService generatorService;
 
   @Test
   public void testBytesGeneration() throws ExceptionOnGeneration {
 
-    byte[] generatedQRCode = generatorService.generateQRCodeBytes("some URL to a file");
+    byte[] generatedQRCode = generatorService.generateQRCodeBytes(INPUT_URL);
+
+    assertNotNull(generatedQRCode);
+    assertTrue(generatedQRCode.length > 0);
+  }
+
+  @Test
+  public void testBytesGenerationWithSize() throws ExceptionOnGeneration {
+
+    byte[] generatedQRCode = generatorService.generateQRCodeBytes(INPUT_URL, 200);
 
     assertNotNull(generatedQRCode);
     assertTrue(generatedQRCode.length > 0);
@@ -68,5 +80,35 @@ public class TestQRCodeGeneratorService {
     });
 
     assertEquals(expectedException.getMessage(), ErrorCode.EMPTY_INPUT.getErrorDescription());
+  }
+
+  @Test
+  public void testInvalidMinimumSizeOnInput() throws ExceptionOnGeneration {
+
+    Exception expectedException = assertThrows(ExceptionOnGeneration.class, () -> {
+      generatorService.generateQRCodeBytes(INPUT_URL, 50);
+    });
+
+    String errorMessage = getInvalidSizeErrorMessage();
+
+    assertEquals(expectedException.getMessage(), errorMessage);
+  }
+
+  @Test
+  public void testInvalidMaximumSizeOnInput() throws ExceptionOnGeneration {
+
+    Exception expectedException = assertThrows(ExceptionOnGeneration.class, () -> {
+      generatorService.generateQRCodeBytes(INPUT_URL, 600);
+    });
+
+    String errorMessage = getInvalidSizeErrorMessage();
+
+    assertEquals(expectedException.getMessage(), errorMessage);
+  }
+
+  private String getInvalidSizeErrorMessage() {
+
+    return String.format(ErrorCode.INVALID_SIZE.getErrorDescription(),
+        InputValidator.MIN_SIZE, InputValidator.MAX_SIZE);
   }
 }

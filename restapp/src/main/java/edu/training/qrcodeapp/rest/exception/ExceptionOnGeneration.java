@@ -39,6 +39,11 @@ public class ExceptionOnGeneration extends Exception {
     this.message = errorCode.getErrorDescription();
   }
 
+  public ExceptionOnGeneration(String message) {
+
+    this.message = message;
+  }
+
   @Override
   public String getMessage() {
 
@@ -48,7 +53,8 @@ public class ExceptionOnGeneration extends Exception {
   public enum ErrorCode {
 
     NULL_INPUT("Input URL is null"),
-    EMPTY_INPUT("Input URL is empty");
+    EMPTY_INPUT("Input URL is empty"),
+    INVALID_SIZE("Size must be between %d and %d");
 
     private final String errorDescription;
 

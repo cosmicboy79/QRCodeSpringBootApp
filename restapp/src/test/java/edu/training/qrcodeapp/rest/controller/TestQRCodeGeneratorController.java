@@ -24,7 +24,6 @@
 
 package edu.training.qrcodeapp.rest.controller;
 
-import static edu.training.qrcodeapp.rest.controller.QRCodeGeneratorController.SUCCESS_STATUS;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -39,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
 import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
@@ -69,7 +69,7 @@ public class TestQRCodeGeneratorController {
 
     mockMvc.perform(get(QRCODE_HEALTH_PATH).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.status", is(SUCCESS_STATUS)));
+        .andExpect(jsonPath("$.status", is(StatusEnum.ALIVE.getValue().toUpperCase())));
   }
 
   @Test
