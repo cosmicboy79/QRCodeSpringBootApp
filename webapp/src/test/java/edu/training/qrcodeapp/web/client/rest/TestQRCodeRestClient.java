@@ -22,28 +22,31 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.web.controller;
+package edu.training.qrcodeapp.web.client.rest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import edu.training.qrcodeapp.model.InputURL;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@Controller
-@RequestMapping("/qrcode")
-public class QRCodeGeneratorController {
+@SpringBootTest
+public class TestQRCodeRestClient {
 
   @Autowired
   QRCodeClient qrCodeClient;
 
-  @RequestMapping(value = "/send", method = RequestMethod.POST)
-  public void getQRCode(Model model, @ModelAttribute("inputURL")InputURL inputURL) {
+  //@Test
+  public void basicTest() {
 
+    InputURL inputURL = new InputURL();
+    inputURL.setUrl("https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf");
     byte[] result = qrCodeClient.getQRCode(inputURL);
-    model.addAttribute("qrcodeInBytes", result);
+
+    assertNotNull(result);
+    assertThat(result.length > 0);
   }
 }

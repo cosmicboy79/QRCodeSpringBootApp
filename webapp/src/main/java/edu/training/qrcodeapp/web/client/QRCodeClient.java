@@ -22,28 +22,11 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.web.controller;
+package edu.training.qrcodeapp.web.client;
 
 import edu.training.qrcodeapp.model.InputURL;
-import edu.training.qrcodeapp.web.client.QRCodeClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-@Controller
-@RequestMapping("/qrcode")
-public class QRCodeGeneratorController {
+public interface QRCodeClient {
 
-  @Autowired
-  QRCodeClient qrCodeClient;
-
-  @RequestMapping(value = "/send", method = RequestMethod.POST)
-  public void getQRCode(Model model, @ModelAttribute("inputURL")InputURL inputURL) {
-
-    byte[] result = qrCodeClient.getQRCode(inputURL);
-    model.addAttribute("qrcodeInBytes", result);
-  }
+  byte[] getQRCode(InputURL inputURL);
 }

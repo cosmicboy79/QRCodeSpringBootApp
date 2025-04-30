@@ -30,7 +30,20 @@
 </head>
 <body>
 <h1>QR Code Generator Web App</h1>
-<input type="text" id="inputURL" placeholder="Input URL">
-<input type="button" id="inputButton" value="send">
+<form action="#" th:action="@{/send}" th:object="${inputURL}" method="post">
+  <table>
+    <tr>
+      <td><label th:text="Input URL" /></td>
+      <td><input type="text" th:field="*{url}" /></td>
+    </tr>
+    <tr>
+      <td><label th:text="Size" /></td>
+      <td><input type="number" th:field="*{size}" /></td>
+    </tr>
+    <tr>
+      <td><input type="submit" value="Send" /></td>
+    </tr>
+  </table>
+</form>
 </body>
 </html>

@@ -22,28 +22,38 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.web.controller;
+package edu.training.qrcodeapp.web.client.rest;
 
+import edu.training.qrcodeapp.model.BytesArray;
 import edu.training.qrcodeapp.model.InputURL;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-@Controller
-@RequestMapping("/qrcode")
-public class QRCodeGeneratorController {
+@Service
+public class QRCodeRestClient implements QRCodeClient {
+
+  public static final String REST_APP_URL = "http://localhost:9090/qrcode/generate";
 
   @Autowired
-  QRCodeClient qrCodeClient;
+  private RestTemplateBuilder restTemplateBuilder;
 
-  @RequestMapping(value = "/send", method = RequestMethod.POST)
-  public void getQRCode(Model model, @ModelAttribute("inputURL")InputURL inputURL) {
+  @Override
+  public byte[] getQRCode(InputURL inputURL) {
 
-    byte[] result = qrCodeClient.getQRCode(inputURL);
-    model.addAttribute("qrcodeInBytes", result);
+    RestTemplate restTemplate = restTemplateBuilder.build();
+
+    ResponseEntity<BytesArray> response = restTemplate.postForEntity(
+        REST_APP_URL,
+        inputURL, BytesArray.class);
+
+    if (response.getBody() == null) {
+      return new byte[0];
+    }
+
+    return response.getBody().getOutput();
   }
 }
