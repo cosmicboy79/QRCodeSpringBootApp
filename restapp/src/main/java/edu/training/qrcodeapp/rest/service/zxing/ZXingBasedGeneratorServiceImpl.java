@@ -31,8 +31,8 @@ import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
+import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import edu.training.qrcodeapp.rest.service.validator.InputValidator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,18 +41,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZXingBasedGeneratorServiceImpl implements QRCodeGeneratorService {
 
-  static final Integer DIMENSION = 300;
+  static final Integer DEFAULT_SIZE = 300;
 
   private final Writer qrCodeWriter = new QRCodeWriter();
 
   public byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration {
 
-    InputValidator.INSTANCE.validate(data);
+    return generateQRCodeBytes(data, DEFAULT_SIZE);
+  }
+
+  @Override
+  public byte[] generateQRCodeBytes(String data, int size) throws ExceptionOnGeneration {
+
+    InputValidator.INSTANCE.validate(data, size);
 
     byte[] result;
 
     try {
-      BitMatrix bitMatrix = encodeInputData(data);
+      BitMatrix bitMatrix = encodeInputData(data, size);
       result = createBytes(bitMatrix);
     }
     catch (WriterException | IOException e) {
@@ -62,9 +68,9 @@ public class ZXingBasedGeneratorServiceImpl implements QRCodeGeneratorService {
     return result;
   }
 
-  BitMatrix encodeInputData(String data) throws WriterException {
+  BitMatrix encodeInputData(String data, int size) throws WriterException {
 
-    return qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, DIMENSION, DIMENSION);
+    return qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, size, size);
   }
 
   byte[] createBytes(BitMatrix bitMatrix) throws IOException {

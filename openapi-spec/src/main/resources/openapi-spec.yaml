@@ -27,7 +27,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Status"
               example:
-                status: "OK"
+                status: alive
   /qrcode/generate:
     post:
       tags:
@@ -42,6 +42,7 @@ paths:
               $ref: '#/components/schemas/InputURL'
             example:
               url: "https://pdfobject.com/pdf/sample.pdf"
+              size: 400
       responses:
         '200':
           description: successful operation
@@ -64,17 +65,26 @@ paths:
 components:
   schemas:
     InputURL:
+      required:
+        - url
       type: object
       properties:
         url:
+          description: URL of the target document used to generate the QR code image
           type: string
+        size:
+          description: the height and width in pixels of the resulting squared QR code image
+          type: integer
+          format: int32
     BytesArray:
+      description: QR code image as bytes
       type: object
       properties:
         output:
           type: string
           format: byte
     Error:
+      description: error message
       type: object
       properties:
         message:
@@ -82,9 +92,12 @@ components:
       required:
         - message
     Status:
+      description: liveness status of the REST application
       type: object
       properties:
         status:
           type: string
+          enum:
+            - alive
       required:
         - status

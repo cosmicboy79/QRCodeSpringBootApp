@@ -31,7 +31,16 @@ public enum InputValidator {
 
   INSTANCE;
 
-  public void validate(String data) throws ExceptionOnGeneration {
+  public static final int MIN_SIZE = 100;
+  public static final int MAX_SIZE = 500;
+
+  public void validate(String data, int size) throws ExceptionOnGeneration {
+
+    if (size < MIN_SIZE || size > MAX_SIZE) {
+      String errorDescription = String.format(ErrorCode.INVALID_SIZE.getErrorDescription(),
+          MIN_SIZE, MAX_SIZE);
+      throw new ExceptionOnGeneration(errorDescription);
+    }
 
     if (data == null) {
       throw new ExceptionOnGeneration(ErrorCode.NULL_INPUT);
