@@ -12,4 +12,12 @@ mvn -pl restapp spring-boot:run
 
 ## Starting Spring Boot Web Application
 
-TBD
+```
+mvn -pl webapp spring-boot:run
+```
+
+Open the browser and go to the following address:
+
+```
+http://localhost:8080/qrcode
+```
