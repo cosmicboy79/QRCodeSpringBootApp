@@ -53,8 +53,14 @@ public class QRCodeGeneratorController {
   public ResponseEntity<Status> getHealthStatus() {
 
     Status status = new Status();
-    status.setStatus(StatusEnum.ALIVE);
 
+    if (generatorService == null) {
+
+      status.status(StatusEnum.UNAVAILABLE);
+      return new ResponseEntity<>(status, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    status.setStatus(StatusEnum.READY);
     return new ResponseEntity<>(status, HttpStatus.OK);
   }
 

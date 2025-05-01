@@ -41,14 +41,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZXingBasedGeneratorServiceImpl implements QRCodeGeneratorService {
 
-  static final Integer DEFAULT_SIZE = 300;
-
   private final Writer qrCodeWriter = new QRCodeWriter();
-
-  public byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration {
-
-    return generateQRCodeBytes(data, DEFAULT_SIZE);
-  }
 
   @Override
   public byte[] generateQRCodeBytes(String data, int size) throws ExceptionOnGeneration {

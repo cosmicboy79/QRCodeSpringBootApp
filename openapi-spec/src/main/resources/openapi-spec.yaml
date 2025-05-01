@@ -27,7 +27,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Status"
               example:
-                status: alive
+                status: ready
   /qrcode/generate:
     post:
       tags:
@@ -98,6 +98,7 @@ components:
         status:
           type: string
           enum:
-            - alive
+            - ready
+            - unavailable
       required:
         - status

@@ -69,7 +69,7 @@ public class TestQRCodeGeneratorController {
 
     mockMvc.perform(get(QRCODE_HEALTH_PATH).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.status", is(StatusEnum.ALIVE.getValue().toUpperCase())));
+        .andExpect(jsonPath("$.status", is(StatusEnum.READY.getValue().toUpperCase())));
   }
 
   @Test

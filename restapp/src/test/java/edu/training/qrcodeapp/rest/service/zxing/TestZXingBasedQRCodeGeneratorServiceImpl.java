@@ -24,7 +24,7 @@
 
 package edu.training.qrcodeapp.rest.service.zxing;
 
-import static edu.training.qrcodeapp.rest.service.zxing.ZXingBasedGeneratorServiceImpl.DEFAULT_SIZE;
+import static edu.training.qrcodeapp.rest.service.QRCodeGeneratorService.DEFAULT_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
