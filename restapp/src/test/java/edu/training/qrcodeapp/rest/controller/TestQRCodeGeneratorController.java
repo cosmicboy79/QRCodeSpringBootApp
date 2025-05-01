@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.model.InputData;
 import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
@@ -69,7 +69,7 @@ public class TestQRCodeGeneratorController {
 
     mockMvc.perform(get(QRCODE_HEALTH_PATH).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.status", is(StatusEnum.ALIVE.getValue().toUpperCase())));
+        .andExpect(jsonPath("$.status", is(StatusEnum.READY.getValue().toUpperCase())));
   }
 
   @Test
@@ -77,57 +77,57 @@ public class TestQRCodeGeneratorController {
 
     when(generatorService.generateQRCodeBytes(anyString())).thenReturn(new byte[]{34, 56, 102});
 
-    InputURL inputURL = new InputURL();
-    inputURL.setUrl("https://pdfobject.com/pdf/sample.pdf");
+    InputData inputData = new InputData();
+    inputData.setUrl("https://pdfobject.com/pdf/sample.pdf");
 
     mockMvc.perform(
             post(QRCODE_GENERATION_PATH).contentType(MediaType.APPLICATION_JSON)
-                .content(inputURL.toJson()))
+                .content(inputData.toJson()))
         .andExpect(status().isCreated())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.output", is("Ijhm")));
 
-    checkInputOnExecution(inputURL);
+    checkInputOnExecution(inputData);
   }
 
   @Test
   public void testBadRequestWhenEmptyInputURL() throws Exception {
 
-    InputURL inputURL = new InputURL();
-    inputURL.setUrl("");
+    InputData inputData = new InputData();
+    inputData.setUrl("");
 
     doThrow(new ExceptionOnGeneration(ErrorCode.EMPTY_INPUT)).when(generatorService)
-        .generateQRCodeBytes(inputURL.getUrl());
+        .generateQRCodeBytes(inputData.getUrl());
 
     mockMvc.perform(
-            post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputURL.toJson()))
+            post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputData.toJson()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", is(ErrorCode.EMPTY_INPUT.getErrorDescription())));
 
-    checkInputOnExecution(inputURL);
+    checkInputOnExecution(inputData);
   }
 
   @Test
   public void testBadRequestWhenNullInputURL() throws Exception {
 
-    InputURL inputURL = new InputURL();
-    inputURL.setUrl(null);
+    InputData inputData = new InputData();
+    inputData.setUrl(null);
 
     doThrow(new ExceptionOnGeneration(ErrorCode.NULL_INPUT)).when(generatorService)
-        .generateQRCodeBytes(inputURL.getUrl());
+        .generateQRCodeBytes(inputData.getUrl());
 
     mockMvc.perform(
-            post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputURL.toJson()))
+            post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputData.toJson()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", is(ErrorCode.NULL_INPUT.getErrorDescription())));
 
-    checkInputOnExecution(inputURL);
+    checkInputOnExecution(inputData);
   }
 
-  private void checkInputOnExecution(InputURL inputURL) throws ExceptionOnGeneration {
+  private void checkInputOnExecution(InputData inputData) throws ExceptionOnGeneration {
 
     verify(generatorService, atMostOnce()).generateQRCodeBytes(inputUrlArgumentCaptor.capture());
 
-    assertEquals(inputURL.getUrl(), inputUrlArgumentCaptor.getValue());
+    assertEquals(inputData.getUrl(), inputUrlArgumentCaptor.getValue());
   }
 }

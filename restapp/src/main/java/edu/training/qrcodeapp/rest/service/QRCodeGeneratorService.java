@@ -28,7 +28,12 @@ import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 
 public interface QRCodeGeneratorService {
 
-  byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration;
+  Integer DEFAULT_SIZE = 300;
+
+  default byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration {
+
+    return generateQRCodeBytes(data, DEFAULT_SIZE);
+  }
 
   byte[] generateQRCodeBytes(String data, int size) throws ExceptionOnGeneration;
 }

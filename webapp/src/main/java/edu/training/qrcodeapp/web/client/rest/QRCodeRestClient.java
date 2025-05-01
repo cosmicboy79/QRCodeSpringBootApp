@@ -25,7 +25,7 @@
 package edu.training.qrcodeapp.web.client.rest;
 
 import edu.training.qrcodeapp.model.BytesArray;
-import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.model.InputData;
 import edu.training.qrcodeapp.model.Status;
 import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
@@ -49,7 +49,7 @@ public class QRCodeRestClient implements QRCodeClient {
   private RestTemplateBuilder restTemplateBuilder;
 
   @Override
-  public boolean isAlive() {
+  public boolean isReady() {
 
     Status status;
 
@@ -66,17 +66,17 @@ public class QRCodeRestClient implements QRCodeClient {
       return false;
     }
 
-    return StatusEnum.ALIVE.equals(status.getStatus());
+    return StatusEnum.READY.equals(status.getStatus());
   }
 
   @Override
-  public byte[] getQRCode(InputURL inputURL) {
+  public byte[] getQRCode(InputData inputData) {
 
     RestTemplate restTemplate = restTemplateBuilder.build();
 
     ResponseEntity<BytesArray> response = restTemplate.postForEntity(
         GENERATE,
-        inputURL, BytesArray.class);
+        inputData, BytesArray.class);
 
     if (response.getBody() == null) {
       return new byte[0];

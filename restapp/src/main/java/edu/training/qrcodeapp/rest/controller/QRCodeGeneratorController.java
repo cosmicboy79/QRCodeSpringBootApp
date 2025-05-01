@@ -26,7 +26,7 @@ package edu.training.qrcodeapp.rest.controller;
 
 import edu.training.qrcodeapp.model.BytesArray;
 import edu.training.qrcodeapp.model.Error;
-import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.model.InputData;
 import edu.training.qrcodeapp.model.Status;
 import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
@@ -53,18 +53,24 @@ public class QRCodeGeneratorController {
   public ResponseEntity<Status> getHealthStatus() {
 
     Status status = new Status();
-    status.setStatus(StatusEnum.ALIVE);
 
+    if (generatorService == null) {
+
+      status.status(StatusEnum.UNAVAILABLE);
+      return new ResponseEntity<>(status, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    status.setStatus(StatusEnum.READY);
     return new ResponseEntity<>(status, HttpStatus.OK);
   }
 
   @PostMapping("/generate")
-  public ResponseEntity<?> getQRCodeBytes(@RequestBody InputURL inputURL) {
+  public ResponseEntity<?> generateQRCode(@RequestBody InputData inputData) {
 
     byte[] output;
 
     try {
-      output = generateOutput(inputURL);
+      output = generateOutput(inputData);
     }
     catch (ExceptionOnGeneration e) {
       return new ResponseEntity<>(createError(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -76,13 +82,13 @@ public class QRCodeGeneratorController {
     return new ResponseEntity<>(result, HttpStatus.CREATED);
   }
 
-  private byte[] generateOutput(InputURL inputURL) throws ExceptionOnGeneration {
+  private byte[] generateOutput(InputData inputData) throws ExceptionOnGeneration {
 
-    if (Objects.isNull(inputURL.getSize())) {
-      return generatorService.generateQRCodeBytes(inputURL.getUrl());
+    if (Objects.isNull(inputData.getSize())) {
+      return generatorService.generateQRCodeBytes(inputData.getUrl());
     }
 
-    return generatorService.generateQRCodeBytes(inputURL.getUrl(), inputURL.getSize());
+    return generatorService.generateQRCodeBytes(inputData.getUrl(), inputData.getSize());
   }
 
   @NotNull
