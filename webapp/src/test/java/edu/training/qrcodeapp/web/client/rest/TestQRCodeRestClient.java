@@ -27,7 +27,7 @@ package edu.training.qrcodeapp.web.client.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.model.InputData;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +42,9 @@ public class TestQRCodeRestClient {
   //@Test
   public void basicTest() {
 
-    InputURL inputURL = new InputURL();
-    inputURL.setUrl("https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf");
-    byte[] result = qrCodeClient.getQRCode(inputURL);
+    InputData inputData = new InputData();
+    inputData.setUrl("https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf");
+    byte[] result = qrCodeClient.getQRCode(inputData);
 
     assertNotNull(result);
     assertThat(result.length > 0);

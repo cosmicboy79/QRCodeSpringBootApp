@@ -31,7 +31,7 @@
   </head>
   <body>
     <div th:if="${showMainPage}">
-      <form style="width:80%" action="#" th:action="@{/generate}" th:object="${inputURL}" method="post" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
+      <form style="width:80%" action="#" th:action="@{/generate}" th:object="${inputData}" method="post" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
         <h2 class="w3-center">QR Code Generator Web App</h2>
         <div class="w3-section">
           <div class="w3-cell-row">
@@ -51,14 +51,16 @@
         </p>
       </form>
       <div th:if="${showQrCode}" style="width:40%" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
-        <img th:src="${qrcodeBytes}" src="" />
+        <label th:text="'QR Code'" />
+        <br /><br />
+        <img th:src="${qrcodeBytes}" src="#" />
       </div>
     </div>
 
     <div th:if="not ${showMainPage}">
       <h2 class="w3-center">QR Code Generator Web App</h2>
       <h3 class="w3-center">Backend REST service is not up and running!</h3>
-      <h3 class="w3-center">Start it and then refresh this page.</h3>
+      <h3 class="w3-center">Start it and then refresh this page</h3>
     </div>
   </body>
 </html>

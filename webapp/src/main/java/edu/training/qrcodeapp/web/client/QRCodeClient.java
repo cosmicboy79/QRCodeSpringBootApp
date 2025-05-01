@@ -24,11 +24,11 @@
 
 package edu.training.qrcodeapp.web.client;
 
-import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.model.InputData;
 
 public interface QRCodeClient {
 
-  boolean isAlive();
+  boolean isReady();
 
-  byte[] getQRCode(InputURL inputURL);
+  byte[] getQRCode(InputData inputData);
 }

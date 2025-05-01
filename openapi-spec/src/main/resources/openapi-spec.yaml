@@ -39,7 +39,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InputURL'
+              $ref: '#/components/schemas/InputData'
             example:
               url: "https://pdfobject.com/pdf/sample.pdf"
               size: 400
@@ -64,7 +64,7 @@ paths:
                 message: "Not able to generate QR Code"
 components:
   schemas:
-    InputURL:
+    InputData:
       required:
         - url
       type: object
