@@ -16,6 +16,18 @@ See below details on how to start each of them.
 This project uses [Maven](https://maven.apache.org/what-is-maven.html)
 as build tool.
 
+In order to build it, just do the well-known:
+
+```
+mvn clean install
+```
+
+To build without executing automated tests:
+
+```
+mvn clean install -DskipTests
+```
+
 ## Starting Spring Boot REST Application
 
 Open a terminal window or tab and execute the following Maven command
