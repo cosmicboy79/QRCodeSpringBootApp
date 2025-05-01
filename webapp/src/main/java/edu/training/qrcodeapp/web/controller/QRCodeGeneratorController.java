@@ -24,16 +24,65 @@
 
 package edu.training.qrcodeapp.web.controller;
 
+import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.web.client.QRCodeClient;
+import java.util.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class QRCodeGeneratorController {
 
-  @RequestMapping("/qrcode")
-  public void getQRCode(Model model) {
+  private static final String QRCODE_BYTES = "qrcodeBytes";
+  private static final String INPUT_MODEL = "inputURL";
+  private static final String SHOW_MAIN_PAGE = "showMainPage";
+  private static final String SHOW_QR_CODE = "showQrCode";
+  private static final String MAIN_PAGE = "qrcode";
 
-    model.addAttribute("qrcodeInBytes", new byte[]{34, 56, 102});
+  @Autowired
+  QRCodeClient qrCodeClient;
+
+  @GetMapping("/qrcode")
+  public String showPage(Model model) {
+
+    if (qrCodeClient.isAlive()) {
+
+      model.addAttribute(INPUT_MODEL, new InputURL());
+      model.addAttribute(SHOW_MAIN_PAGE, true);
+      model.addAttribute(SHOW_QR_CODE, false);
+
+      return MAIN_PAGE;
+    }
+
+    model.addAttribute(SHOW_MAIN_PAGE, false);
+    return MAIN_PAGE;
+  }
+
+  @PostMapping(value = "/generate", params = "action=Send")
+  public String generateQRCode(Model model, @ModelAttribute(INPUT_MODEL) InputURL inputURL) {
+
+    byte[] result = qrCodeClient.getQRCode(inputURL);
+
+    model.addAttribute(QRCODE_BYTES,
+        "data:image/png;base64," + Base64.getEncoder().encodeToString(result));
+    model.addAttribute(INPUT_MODEL, inputURL);
+    model.addAttribute(SHOW_MAIN_PAGE, true);
+    model.addAttribute(SHOW_QR_CODE, true);
+
+    return MAIN_PAGE;
+  }
+
+  @PostMapping(value = "/generate", params = "action=Clear")
+  public String clearPage(Model model) {
+
+    model.addAttribute(INPUT_MODEL, new InputURL());
+    model.addAttribute(SHOW_MAIN_PAGE, true);
+    model.addAttribute(SHOW_QR_CODE, false);
+
+    return MAIN_PAGE;
   }
 }
