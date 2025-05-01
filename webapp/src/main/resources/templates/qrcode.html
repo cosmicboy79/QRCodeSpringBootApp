@@ -24,26 +24,41 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>QR Code Generator Web App</title>
-</head>
-<body>
-<h1>QR Code Generator Web App</h1>
-<form action="#" th:action="@{/send}" th:object="${inputURL}" method="post">
-  <table>
-    <tr>
-      <td><label th:text="Input URL" /></td>
-      <td><input type="text" th:field="*{url}" /></td>
-    </tr>
-    <tr>
-      <td><label th:text="Size" /></td>
-      <td><input type="number" th:field="*{size}" /></td>
-    </tr>
-    <tr>
-      <td><input type="submit" value="Send" /></td>
-    </tr>
-  </table>
-</form>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <link th:href="@{https://www.w3schools.com/w3css/5/w3.css}" rel="stylesheet" />
+    <title>QR Code Generator Web App</title>
+  </head>
+  <body>
+    <div th:if="${showMainPage}">
+      <form style="width:80%" action="#" th:action="@{/generate}" th:object="${inputURL}" method="post" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
+        <h2 class="w3-center">QR Code Generator Web App</h2>
+        <div class="w3-section">
+          <div class="w3-cell-row">
+            <label style="width:10%" class="w3-cell" th:text="URL" />
+            <input style="width:90%" th:field="*{url}" class="w3-cell w3-input w3-border" name="url" type="text">
+          </div>
+        </div>
+        <div class="w3-section">
+          <div class="w3-cell-row">
+            <label style="width:10%" class="w3-cell" th:text="Size" />
+            <input style="width:10%" th:field="*{size}" class="w3-cell w3-input w3-border" name="size" type="number">
+          </div>
+        </div>
+        <p class="w3-center">
+          <input class="w3-button w3-section w3-blue w3-ripple" type="submit" name="action" value="Send"/>
+          <input class="w3-button w3-section w3-blue w3-ripple" type="submit" name="action" value="Clear"/>
+        </p>
+      </form>
+      <div th:if="${showQrCode}" style="width:40%" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
+        <img th:src="${qrcodeBytes}" src="" />
+      </div>
+    </div>
+
+    <div th:if="not ${showMainPage}">
+      <h2 class="w3-center">QR Code Generator Web App</h2>
+      <h3 class="w3-center">Backend REST service is not up and running!</h3>
+      <h3 class="w3-center">Start it and then refresh this page.</h3>
+    </div>
+  </body>
 </html>

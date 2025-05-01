@@ -26,20 +26,48 @@ package edu.training.qrcodeapp.web.client.rest;
 
 import edu.training.qrcodeapp.model.BytesArray;
 import edu.training.qrcodeapp.model.InputURL;
+import edu.training.qrcodeapp.model.Status;
+import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class QRCodeRestClient implements QRCodeClient {
 
-  public static final String REST_APP_URL = "http://localhost:9090/qrcode/generate";
+  private static final String BASE_REST_APP_URL = "http://localhost:9090/qrcode";
+
+  private static final String GENERATE = BASE_REST_APP_URL + "/generate";
+
+  private static final String HEALTH = BASE_REST_APP_URL + "/health";
 
   @Autowired
   private RestTemplateBuilder restTemplateBuilder;
+
+  @Override
+  public boolean isAlive() {
+
+    Status status;
+
+    try {
+
+      RestTemplate restTemplate = restTemplateBuilder.build();
+      status = restTemplate.getForEntity(HEALTH, Status.class).getBody();
+    }
+    catch (RestClientException e) {
+      return false;
+    }
+
+    if (status == null) {
+      return false;
+    }
+
+    return StatusEnum.ALIVE.equals(status.getStatus());
+  }
 
   @Override
   public byte[] getQRCode(InputURL inputURL) {
@@ -47,7 +75,7 @@ public class QRCodeRestClient implements QRCodeClient {
     RestTemplate restTemplate = restTemplateBuilder.build();
 
     ResponseEntity<BytesArray> response = restTemplate.postForEntity(
-        REST_APP_URL,
+        GENERATE,
         inputURL, BytesArray.class);
 
     if (response.getBody() == null) {

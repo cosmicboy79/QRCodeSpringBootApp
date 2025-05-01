@@ -28,5 +28,7 @@ import edu.training.qrcodeapp.model.InputURL;
 
 public interface QRCodeClient {
 
+  boolean isAlive();
+
   byte[] getQRCode(InputURL inputURL);
 }
