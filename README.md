@@ -28,6 +28,8 @@ To build without executing automated tests:
 mvn clean install -DskipTests
 ```
 
+Java 21 is used for this project.
+
 ## Starting Spring Boot REST Application
 
 Open a terminal window or tab and execute the following Maven command
