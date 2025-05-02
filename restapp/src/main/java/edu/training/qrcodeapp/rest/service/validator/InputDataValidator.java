@@ -26,6 +26,8 @@ package edu.training.qrcodeapp.rest.service.validator;
 
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Encapsulates validations for the QR code generation's input data.
@@ -36,6 +38,7 @@ public enum InputDataValidator {
 
   public static final int MIN_SIZE = 100;
   public static final int MAX_SIZE = 500;
+  private final Logger logger = LoggerFactory.getLogger(InputDataValidator.class);
 
   /**
    * Validates the input URL, i.e., nor empty nor malformed.
@@ -46,10 +49,12 @@ public enum InputDataValidator {
   public void validateUrl(String url) throws ExceptionOnGeneration {
 
     if (url == null) {
+      logger.error("Input URL is null");
       throw new ExceptionOnGeneration(ErrorCode.NULL_INPUT);
     }
 
     if (url.isBlank()) {
+      logger.error("Input URL is empty");
       throw new ExceptionOnGeneration((ErrorCode.EMPTY_INPUT));
     }
   }
@@ -63,6 +68,9 @@ public enum InputDataValidator {
   public void validateSize(int size) throws ExceptionOnGeneration {
 
     if (size < MIN_SIZE || size > MAX_SIZE) {
+
+      logger.error("Provided size is invalid: {}", size);
+
       String errorDescription = String.format(ErrorCode.INVALID_SIZE.getErrorDescription(),
           MIN_SIZE, MAX_SIZE);
       throw new ExceptionOnGeneration(errorDescription);

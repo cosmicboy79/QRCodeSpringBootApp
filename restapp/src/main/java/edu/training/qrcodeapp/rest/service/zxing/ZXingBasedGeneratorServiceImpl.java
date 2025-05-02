@@ -31,11 +31,14 @@ import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import edu.training.qrcodeapp.rest.controller.QRCodeGeneratorController;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import edu.training.qrcodeapp.rest.service.validator.InputDataValidator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -46,13 +49,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZXingBasedGeneratorServiceImpl implements QRCodeGeneratorService {
 
+  private final Logger logger = LoggerFactory.getLogger(ZXingBasedGeneratorServiceImpl.class);
+
   private final Writer qrCodeWriter = new QRCodeWriter();
 
   @Override
   public byte[] generateQRCodeBytes(String url, int size) throws ExceptionOnGeneration {
 
+    logger.debug("Generating QR Code");
+
     InputDataValidator.INSTANCE.validateUrl(url);
     InputDataValidator.INSTANCE.validateSize(size);
+
+    logger.debug("Input validated");
 
     byte[] result;
 
@@ -61,9 +70,11 @@ public class ZXingBasedGeneratorServiceImpl implements QRCodeGeneratorService {
       result = createBytes(bitMatrix);
     }
     catch (WriterException | IOException e) {
+      logger.error("Error while generating the QR Code: {}", e.getMessage());
       throw new ExceptionOnGeneration(e);
     }
 
+    logger.debug("QR Code generated: {}", result);
     return result;
   }
 

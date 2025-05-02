@@ -32,6 +32,8 @@ import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +50,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/qrcode")
 public class QRCodeGeneratorController {
 
+  private final Logger logger = LoggerFactory.getLogger(QRCodeGeneratorController.class);
+
   @Autowired
   private QRCodeGeneratorService generatorService;
 
@@ -63,9 +67,13 @@ public class QRCodeGeneratorController {
 
     if (generatorService == null) {
 
+      logger.error("Application is not ready.");
+
       status.status(StatusEnum.UNAVAILABLE);
       return new ResponseEntity<>(status, HttpStatus.SERVICE_UNAVAILABLE);
     }
+
+    logger.info("Application is ready.");
 
     status.setStatus(StatusEnum.READY);
     return new ResponseEntity<>(status, HttpStatus.OK);
@@ -86,21 +94,25 @@ public class QRCodeGeneratorController {
       output = generateOutput(inputData);
     }
     catch (ExceptionOnGeneration e) {
+      logger.error("QR Code generation failed");
       return new ResponseEntity<>(createError(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     BytesArray result = new BytesArray();
     result.setOutput(output);
 
+    logger.debug("QR Code generated");
     return new ResponseEntity<>(result, HttpStatus.CREATED);
   }
 
   private byte[] generateOutput(InputData inputData) throws ExceptionOnGeneration {
 
     if (Objects.isNull(inputData.getSize())) {
+      logger.debug("Generating QR Code with default size: {}", QRCodeGeneratorService.DEFAULT_SIZE);
       return generatorService.generateQRCodeBytes(inputData.getUrl());
     }
 
+    logger.debug("Generating QR Code with size provided in the input: {}", inputData.getSize());
     return generatorService.generateQRCodeBytes(inputData.getUrl(), inputData.getSize());
   }
 
