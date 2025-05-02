@@ -26,14 +26,39 @@ package edu.training.qrcodeapp.rest.service;
 
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 
+/**
+ * Defines the QR code generation related operations.
+ */
 public interface QRCodeGeneratorService {
 
+  // in pixels, define both height and width values of the generated image
   Integer DEFAULT_SIZE = 300;
 
-  default byte[] generateQRCodeBytes(String data) throws ExceptionOnGeneration {
+  /**
+   * Generates a QR code for the given input URL with a fixed, default size, i.e.,
+   * height and width values in pixels.
+   * <p>
+   * This is a default implementation that will simply make use of other
+   * specific implementations.
+   *
+   * @param url URL to be used as the input for the QR code generation
+   * @return QR code as array of bytes
+   * @throws ExceptionOnGeneration in case of any failure during generation, this exception
+   *                               encapsulates the original error
+   */
+  default byte[] generateQRCodeBytes(String url) throws ExceptionOnGeneration {
 
-    return generateQRCodeBytes(data, DEFAULT_SIZE);
+    return generateQRCodeBytes(url, DEFAULT_SIZE);
   }
 
-  byte[] generateQRCodeBytes(String data, int size) throws ExceptionOnGeneration;
+  /**
+   * Generates a QR code for the given input URL and size, i.e., height and width values in pixels.
+   *
+   * @param url  URL to be used as the input for the QR code generation
+   * @param size both height and width values in pixels
+   * @return QR code as array of bytes
+   * @throws ExceptionOnGeneration in case of any failure during generation, this exception
+   *                               encapsulates the original error
+   */
+  byte[] generateQRCodeBytes(String url, int size) throws ExceptionOnGeneration;
 }

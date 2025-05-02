@@ -24,24 +24,43 @@
 
 package edu.training.qrcodeapp.rest.exception;
 
+/**
+ * Default exception that encapsulates the real cause of error in case of failure during QR code
+ * generation.
+ */
 public class ExceptionOnGeneration extends Exception {
 
-  private String message;
+  private final String message;
 
+  /**
+   * Constructor.
+   *
+   * @param cause Original exception
+   */
   public ExceptionOnGeneration(Throwable cause) {
 
     super(cause);
     this.message = cause.getMessage();
   }
 
+  /**
+   * Constructor.
+   *
+   * @param errorCode {@link ErrorCode}
+   */
   public ExceptionOnGeneration(ErrorCode errorCode) {
 
     this.message = errorCode.getErrorDescription();
   }
 
-  public ExceptionOnGeneration(String message) {
+  /**
+   * Constructor.
+   *
+   * @param error Description of the error cause
+   */
+  public ExceptionOnGeneration(String error) {
 
-    this.message = message;
+    this.message = error;
   }
 
   @Override
@@ -50,6 +69,9 @@ public class ExceptionOnGeneration extends Exception {
     return message;
   }
 
+  /**
+   * Defines the valid error codes in case of failure of QR code generation.
+   */
   public enum ErrorCode {
 
     NULL_INPUT("Input URL is null"),
@@ -58,11 +80,19 @@ public class ExceptionOnGeneration extends Exception {
 
     private final String errorDescription;
 
+    /**
+     * Constructor.
+     *
+     * @param errorDescription Internal error short description
+     */
     ErrorCode(String errorDescription) {
 
       this.errorDescription = errorDescription;
     }
 
+    /**
+     * @return Internal error short description
+     */
     public String getErrorDescription() {
 
       return errorDescription;

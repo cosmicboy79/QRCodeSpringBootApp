@@ -33,6 +33,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+/**
+ * TODO for now, unit test is ignored
+ */
 @SpringBootTest
 public class TestQRCodeRestClient {
 

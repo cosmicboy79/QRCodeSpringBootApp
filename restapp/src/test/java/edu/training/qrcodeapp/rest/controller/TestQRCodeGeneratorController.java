@@ -51,11 +51,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+/**
+ * Unit tests for {@link QRCodeGeneratorController}
+ */
 @WebMvcTest(controllers = QRCodeGeneratorController.class)
 public class TestQRCodeGeneratorController {
 
-  private static final String QRCODE_GENERATION_PATH = "/qrcode/generate";
-  private static final String QRCODE_HEALTH_PATH = "/qrcode/health";
+  private static final String BASE_PATH = "/api/v1/qrcode";
+  private static final String QRCODE_GENERATION_PATH = BASE_PATH + "/generate";
+  private static final String QRCODE_HEALTH_PATH = BASE_PATH + "/health";
 
   @MockitoBean
   QRCodeGeneratorService generatorService;
@@ -64,6 +68,11 @@ public class TestQRCodeGeneratorController {
   @Autowired
   private MockMvc mockMvc;
 
+  /**
+   * GIVEN that application is up and running
+   * WHEN using REST GET <code>qrcode/health</code>
+   * THEN REST operation returns "ready" status
+   */
   @Test
   public void testHealthStatus() throws Exception {
 
@@ -72,6 +81,13 @@ public class TestQRCodeGeneratorController {
         .andExpect(jsonPath("$.status", is(StatusEnum.READY.getValue().toUpperCase())));
   }
 
+  /**
+   * GIVEN that application is up and running
+   * WHEN using REST GET <code>qrcode/generate</code>
+   * AND input data is valid
+   * THEN REST response is HTTP 201
+   * AND operation returns QR code as bytes
+   */
   @Test
   public void testGenerateQrCode() throws Exception {
 
@@ -90,6 +106,13 @@ public class TestQRCodeGeneratorController {
     checkInputOnExecution(inputData);
   }
 
+  /**
+   * GIVEN that application is up and running
+   * WHEN using REST GET <code>qrcode/generate</code>
+   * AND input URL is empty
+   * THEN REST response is HTTP 400
+   * AND operation returns related error message in the response
+   */
   @Test
   public void testBadRequestWhenEmptyInputURL() throws Exception {
 
@@ -100,13 +123,21 @@ public class TestQRCodeGeneratorController {
         .generateQRCodeBytes(inputData.getUrl());
 
     mockMvc.perform(
-            post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputData.toJson()))
+            post(QRCODE_GENERATION_PATH).contentType(MediaType.APPLICATION_JSON)
+                .content(inputData.toJson()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", is(ErrorCode.EMPTY_INPUT.getErrorDescription())));
 
     checkInputOnExecution(inputData);
   }
 
+  /**
+   * GIVEN that application is up and running
+   * WHEN using REST GET <code>qrcode/generate</code>
+   * AND input URL is not sent (null input)
+   * THEN REST response is HTTP 400
+   * AND operation returns related error message in the response
+   */
   @Test
   public void testBadRequestWhenNullInputURL() throws Exception {
 
@@ -117,7 +148,8 @@ public class TestQRCodeGeneratorController {
         .generateQRCodeBytes(inputData.getUrl());
 
     mockMvc.perform(
-            post("/qrcode/generate").contentType(MediaType.APPLICATION_JSON).content(inputData.toJson()))
+            post(QRCODE_GENERATION_PATH).contentType(MediaType.APPLICATION_JSON)
+                .content(inputData.toJson()))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message", is(ErrorCode.NULL_INPUT.getErrorDescription())));
 

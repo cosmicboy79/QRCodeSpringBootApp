@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>openapi-spec</artifactId>
-  <description>Open API Specification</description>
+  <description>Open API specification for the REST layer of the QR Code App</description>
 
   <dependencies>
     <dependency>

@@ -31,11 +31,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
-import edu.training.qrcodeapp.rest.service.validator.InputValidator;
+import edu.training.qrcodeapp.rest.service.validator.InputDataValidator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+/**
+ * Basic unit tests for implementations of interface {@link QRCodeGeneratorService}
+ */
 @SpringBootTest
 public class TestQRCodeGeneratorService {
 
@@ -44,6 +47,11 @@ public class TestQRCodeGeneratorService {
   @Autowired
   private QRCodeGeneratorService generatorService;
 
+  /**
+   * GIVEN valid input URL
+   * WHEN generating a QR code out of it
+   * THEN QR code as array of bytes is returned
+   */
   @Test
   public void testBytesGeneration() throws ExceptionOnGeneration {
 
@@ -53,6 +61,11 @@ public class TestQRCodeGeneratorService {
     assertTrue(generatedQRCode.length > 0);
   }
 
+  /**
+   * GIVEN valid input URL and size
+   * WHEN generating a QR code out of them
+   * THEN QR code as array of bytes is returned
+   */
   @Test
   public void testBytesGenerationWithSize() throws ExceptionOnGeneration {
 
@@ -62,6 +75,12 @@ public class TestQRCodeGeneratorService {
     assertTrue(generatedQRCode.length > 0);
   }
 
+  /**
+   * GIVEN no input URL
+   * WHEN generating a QR code with it
+   * THEN generate fails
+   * AND related exception is thrown
+   */
   @Test
   public void testInputIsNull() throws ExceptionOnGeneration {
 
@@ -72,6 +91,12 @@ public class TestQRCodeGeneratorService {
     assertEquals(expectedException.getMessage(), ErrorCode.NULL_INPUT.getErrorDescription());
   }
 
+  /**
+   * GIVEN empty input URL
+   * WHEN generating a QR code with it
+   * THEN generate fails
+   * AND related exception is thrown
+   */
   @Test
   public void testInputIsEmpty() throws ExceptionOnGeneration {
 
@@ -82,6 +107,13 @@ public class TestQRCodeGeneratorService {
     assertEquals(expectedException.getMessage(), ErrorCode.EMPTY_INPUT.getErrorDescription());
   }
 
+  /**
+   * GIVEN valid input URL
+   * AND size smaller than valid lower limit
+   * WHEN generating a QR code
+   * THEN generate fails
+   * AND related exception is thrown
+   */
   @Test
   public void testInvalidMinimumSizeOnInput() throws ExceptionOnGeneration {
 
@@ -94,6 +126,13 @@ public class TestQRCodeGeneratorService {
     assertEquals(expectedException.getMessage(), errorMessage);
   }
 
+  /**
+   * GIVEN valid input URL
+   * AND size bigger than valid upper limit
+   * WHEN generating a QR code
+   * THEN generate fails
+   * AND related exception is thrown
+   */
   @Test
   public void testInvalidMaximumSizeOnInput() throws ExceptionOnGeneration {
 
@@ -109,6 +148,6 @@ public class TestQRCodeGeneratorService {
   private String getInvalidSizeErrorMessage() {
 
     return String.format(ErrorCode.INVALID_SIZE.getErrorDescription(),
-        InputValidator.MIN_SIZE, InputValidator.MAX_SIZE);
+        InputDataValidator.MIN_SIZE, InputDataValidator.MAX_SIZE);
   }
 }

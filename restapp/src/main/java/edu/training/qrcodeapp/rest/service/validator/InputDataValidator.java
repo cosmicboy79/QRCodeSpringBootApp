@@ -27,27 +27,45 @@ package edu.training.qrcodeapp.rest.service.validator;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration.ErrorCode;
 
-public enum InputValidator {
+/**
+ * Encapsulates validations for the QR code generation's input data.
+ */
+public enum InputDataValidator {
 
   INSTANCE;
 
   public static final int MIN_SIZE = 100;
   public static final int MAX_SIZE = 500;
 
-  public void validate(String data, int size) throws ExceptionOnGeneration {
+  /**
+   * Validates the input URL, i.e., nor empty nor malformed.
+   *
+   * @param url URL to be used as the input for the QR code generation
+   * @throws ExceptionOnGeneration URL is whether empty or malformed
+   */
+  public void validateUrl(String url) throws ExceptionOnGeneration {
+
+    if (url == null) {
+      throw new ExceptionOnGeneration(ErrorCode.NULL_INPUT);
+    }
+
+    if (url.isBlank()) {
+      throw new ExceptionOnGeneration((ErrorCode.EMPTY_INPUT));
+    }
+  }
+
+  /**
+   * Validates that the input size is in the valid range.
+   *
+   * @param size both height and width values in pixels
+   * @throws ExceptionOnGeneration size is not in the accepted value range
+   */
+  public void validateSize(int size) throws ExceptionOnGeneration {
 
     if (size < MIN_SIZE || size > MAX_SIZE) {
       String errorDescription = String.format(ErrorCode.INVALID_SIZE.getErrorDescription(),
           MIN_SIZE, MAX_SIZE);
       throw new ExceptionOnGeneration(errorDescription);
-    }
-
-    if (data == null) {
-      throw new ExceptionOnGeneration(ErrorCode.NULL_INPUT);
-    }
-
-    if (data.isBlank()) {
-      throw new ExceptionOnGeneration((ErrorCode.EMPTY_INPUT));
     }
   }
 }

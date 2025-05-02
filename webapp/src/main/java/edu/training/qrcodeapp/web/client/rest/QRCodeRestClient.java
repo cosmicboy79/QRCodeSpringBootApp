@@ -36,10 +36,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * REST client implementation of {@link QRCodeClient}.
+ */
 @Service
 public class QRCodeRestClient implements QRCodeClient {
 
-  private static final String BASE_REST_APP_URL = "http://localhost:9090/qrcode";
+  // TODO put it as a property in the application file
+  private static final String BASE_REST_APP_URL = "http://localhost:9090/api/v1/qrcode";
 
   private static final String GENERATE = BASE_REST_APP_URL + "/generate";
 

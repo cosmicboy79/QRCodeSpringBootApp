@@ -40,12 +40,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * Unit tests for {@link ZXingBasedGeneratorServiceImpl}
+ */
 @ExtendWith(MockitoExtension.class)
 public class TestZXingBasedQRCodeGeneratorServiceImpl {
 
   @Spy
   ZXingBasedGeneratorServiceImpl generatorService;
 
+  /**
+   * GIVEN QR code generation service
+   * AND valid input URL
+   * WHEN an encoding problem occurs during QR code generation
+   * THEN proper {@link ExceptionOnGeneration} is thrown
+   */
   @Test
   public void testExceptionOnEncoding() throws WriterException {
 
@@ -61,6 +70,12 @@ public class TestZXingBasedQRCodeGeneratorServiceImpl {
     assertEquals(errorMessage, expectedException.getMessage());
   }
 
+  /**
+   * GIVEN QR code generation service
+   * AND valid input URL
+   * WHEN an I/O problem occurs during QR code generation
+   * THEN proper {@link ExceptionOnGeneration} is thrown
+   */
   @Test
   public void testExceptionOnOutputStream() throws WriterException, IOException {
 

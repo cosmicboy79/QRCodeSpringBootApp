@@ -26,9 +26,21 @@ package edu.training.qrcodeapp.web.client;
 
 import edu.training.qrcodeapp.model.InputData;
 
+/**
+ * Defines the operations for clients of QR Code backend service.
+ */
 public interface QRCodeClient {
 
+  /**
+   * @return True, if backend service is ready to use; false, otherwise.
+   */
   boolean isReady();
 
+  /**
+   * Gets the QR code for the given input data.
+   *
+   * @param inputData Input information for QR code generation
+   * @return QR Code as array of bytes
+   */
   byte[] getQRCode(InputData inputData);
 }
