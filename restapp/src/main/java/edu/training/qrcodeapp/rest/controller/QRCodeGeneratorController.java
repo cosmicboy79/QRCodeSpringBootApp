@@ -32,7 +32,6 @@ import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,13 +41,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller of the REST layer.
+ */
 @RestController()
-@RequestMapping("/qrcode")
+@RequestMapping("/api/v1/qrcode")
 public class QRCodeGeneratorController {
 
   @Autowired
   private QRCodeGeneratorService generatorService;
 
+  /**
+   * Checks whether the application is alive and ready to use or not.
+   *
+   * @return Health status encapsulated as {@link ResponseEntity}
+   */
   @GetMapping("/health")
   public ResponseEntity<Status> getHealthStatus() {
 
@@ -64,6 +71,12 @@ public class QRCodeGeneratorController {
     return new ResponseEntity<>(status, HttpStatus.OK);
   }
 
+  /**
+   * Generates the QR code for the given input data.
+   *
+   * @param inputData Input data sent in the body of the request
+   * @return {@link ResponseEntity} containing either the correct data or error information
+   */
   @PostMapping("/generate")
   public ResponseEntity<?> generateQRCode(@RequestBody InputData inputData) {
 
@@ -91,7 +104,6 @@ public class QRCodeGeneratorController {
     return generatorService.generateQRCodeBytes(inputData.getUrl(), inputData.getSize());
   }
 
-  @NotNull
   private Error createError(String message) {
 
     Error error = new Error();

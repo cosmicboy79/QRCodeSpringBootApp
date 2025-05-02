@@ -33,25 +33,31 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import edu.training.qrcodeapp.rest.exception.ExceptionOnGeneration;
 import edu.training.qrcodeapp.rest.service.QRCodeGeneratorService;
-import edu.training.qrcodeapp.rest.service.validator.InputValidator;
+import edu.training.qrcodeapp.rest.service.validator.InputDataValidator;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.springframework.stereotype.Component;
 
+/**
+ * "Zebra Crossing" ZXing implementation of {@link QRCodeGeneratorService}.
+ *
+ * @see <a href="https://github.com/zxing/zxing?tab=readme-ov-file#get-started-developing">ZXing</a>
+ */
 @Component
 public class ZXingBasedGeneratorServiceImpl implements QRCodeGeneratorService {
 
   private final Writer qrCodeWriter = new QRCodeWriter();
 
   @Override
-  public byte[] generateQRCodeBytes(String data, int size) throws ExceptionOnGeneration {
+  public byte[] generateQRCodeBytes(String url, int size) throws ExceptionOnGeneration {
 
-    InputValidator.INSTANCE.validate(data, size);
+    InputDataValidator.INSTANCE.validateUrl(url);
+    InputDataValidator.INSTANCE.validateSize(size);
 
     byte[] result;
 
     try {
-      BitMatrix bitMatrix = encodeInputData(data, size);
+      BitMatrix bitMatrix = encodeInputData(url, size);
       result = createBytes(bitMatrix);
     }
     catch (WriterException | IOException e) {
@@ -61,9 +67,9 @@ public class ZXingBasedGeneratorServiceImpl implements QRCodeGeneratorService {
     return result;
   }
 
-  BitMatrix encodeInputData(String data, int size) throws WriterException {
+  BitMatrix encodeInputData(String url, int size) throws WriterException {
 
-    return qrCodeWriter.encode(data, BarcodeFormat.QR_CODE, size, size);
+    return qrCodeWriter.encode(url, BarcodeFormat.QR_CODE, size, size);
   }
 
   byte[] createBytes(BitMatrix bitMatrix) throws IOException {

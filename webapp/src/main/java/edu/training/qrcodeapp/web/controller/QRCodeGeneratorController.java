@@ -34,18 +34,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+/**
+ * Main web controller of the application.
+ */
 @Controller
 public class QRCodeGeneratorController {
 
+  // Model attribute for the generated QR code as array of bytes
   private static final String QRCODE_BYTES = "qrcodeBytes";
+  // Model attribute for the input information for QR code generation
   private static final String INPUT_MODEL = "inputData";
+  // Model boolean attribute to show or not the main page's form
   private static final String SHOW_MAIN_PAGE = "showMainPage";
+  // Model boolean attribute to display or not the QR code image
   private static final String SHOW_QR_CODE = "showQrCode";
+  // Model attribute with the name of the main page
   private static final String MAIN_PAGE = "qrcode";
 
   @Autowired
   QRCodeClient qrCodeClient;
 
+  /**
+   * Shows the main page's form, in case the backend is up and running.
+   * <p>
+   * If not the case, then the main page will display a warning message.
+   *
+   * @param model Holder for attributes used in the page
+   * @return Main page
+   */
   @GetMapping("/qrcode")
   public String showPage(Model model) {
 
@@ -62,6 +78,13 @@ public class QRCodeGeneratorController {
     return MAIN_PAGE;
   }
 
+  /**
+   * Operation posted for QR code generation, based on the data inputted in the main page's form.
+   *
+   * @param model     Holder for attributes used in the page
+   * @param inputData Input information for QR code generation
+   * @return Main page
+   */
   @PostMapping(value = "/generate", params = "action=Send")
   public String generateQRCode(Model model, @ModelAttribute(INPUT_MODEL) InputData inputData) {
 
@@ -76,6 +99,12 @@ public class QRCodeGeneratorController {
     return MAIN_PAGE;
   }
 
+  /**
+   * Operation posted for cleaning the main page's form.
+   *
+   * @param model Holder for attributes used in the page
+   * @return Main page
+   */
   @PostMapping(value = "/generate", params = "action=Clear")
   public String clearPage(Model model) {
 

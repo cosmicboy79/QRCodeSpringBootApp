@@ -7,7 +7,7 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.12
 servers:
-  - url: http://qrcodeapp.springboot.edu/api/v1
+  - url: http://localhost:9090/api/v1
 tags:
   - name: QRCode
     description: Operation related to QR Code generation
@@ -51,7 +51,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BytesArray'
               example:
-                output: [34, 56, 23, 26, 11, 104, 0, 99]
+                output: "iVBORw0KGgoAAAANSUhEUgAAASwAAAEsAQAAAABRBrPYAAABWklEQVR4Xu3QQW7FMAgEUG7G1X2k3iBlBuNElvn5y6oaojhmeGxi1zf1Y3tyLLGtxLYS20psq7/PhrE8bj7MBy7xWalYw3AFgRiYzHvNxBqG2YwTsV+p2EdWJ44bi72xi1n2Yt+wNcx5djMVa5mxHKPHM1Oxjq0aSHGAPXKxI4sBRjxiCnM/Yh9YDqEGLRctY7GOJUQQbzokFCyxllnBifh3x6RiDSvHSZJM+RE7MxrMM2RfdiATO7KaOX1MYob2qkWxM4sBgqdaK2ItQ2yU1AxyPVuxhln9V2COGEXn3BA7MzQDkG8uVY4S61hOUt8LjkSsZ/Em5IrnnmGDodiRVcUUIb+1KtYztviZHtd48UGHk/tiZ8YGJxWH7Lgi1rP6nb42+MtnK/bGbL0cw+Im9sow8hmh6MUaVhjK0c4N3sU6Nv8kmaPDmDcqsTN7LbGtxLYS20psq//AfgFHoaFfQHsVsAAAAABJRU5ErkJggg=="
         '400':
           description: Invalid status value
         default:
@@ -77,7 +77,7 @@ components:
           type: integer
           format: int32
     BytesArray:
-      description: QR code image as bytes
+      description: QR code image as bytes (string representation)
       type: object
       properties:
         output:

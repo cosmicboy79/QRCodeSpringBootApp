@@ -37,6 +37,12 @@ in the project's root directory:
 mvn -pl restapp spring-boot:run
 ```
 
+The following REST operations, as defined in the OpenAPI specification,
+will be exposed on HTTP `localhost:9090`:
+
+- api/v1/qrcode/health
+- api/v1/qrcode/generate
+
 ## Starting Spring Boot Web Application
 
 Open a terminal window or tab and execute the following Maven command

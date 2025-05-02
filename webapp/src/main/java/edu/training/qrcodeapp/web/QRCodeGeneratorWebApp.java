@@ -27,6 +27,9 @@ package edu.training.qrcodeapp.web;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Spring Boot main entry point.
+ */
 @SpringBootApplication
 public class QRCodeGeneratorWebApp {
 
