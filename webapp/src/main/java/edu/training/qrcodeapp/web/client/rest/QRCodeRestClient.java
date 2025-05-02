@@ -29,6 +29,8 @@ import edu.training.qrcodeapp.model.InputData;
 import edu.training.qrcodeapp.model.Status;
 import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
@@ -44,16 +46,17 @@ public class QRCodeRestClient implements QRCodeClient {
 
   // TODO put it as a property in the application file
   private static final String BASE_REST_APP_URL = "http://localhost:9090/api/v1/qrcode";
-
   private static final String GENERATE = BASE_REST_APP_URL + "/generate";
-
   private static final String HEALTH = BASE_REST_APP_URL + "/health";
-
+  private final Logger logger = LoggerFactory.getLogger(QRCodeRestClient.class);
+  
   @Autowired
   private RestTemplateBuilder restTemplateBuilder;
 
   @Override
   public boolean isReady() {
+
+    logger.debug("Checking whether Backend is up and running or not");
 
     Status status;
 
@@ -63,18 +66,23 @@ public class QRCodeRestClient implements QRCodeClient {
       status = restTemplate.getForEntity(HEALTH, Status.class).getBody();
     }
     catch (RestClientException e) {
+      logger.error("Backend is not up and running: {}", e.getMessage());
       return false;
     }
 
     if (status == null) {
+      logger.error("Backend is not up and running");
       return false;
     }
 
+    logger.info("Backend is up and running");
     return StatusEnum.READY.equals(status.getStatus());
   }
 
   @Override
   public byte[] getQRCode(InputData inputData) {
+
+    logger.debug("Getting QR code for the given input: {}", inputData.toJson());
 
     RestTemplate restTemplate = restTemplateBuilder.build();
 
@@ -83,9 +91,11 @@ public class QRCodeRestClient implements QRCodeClient {
         inputData, BytesArray.class);
 
     if (response.getBody() == null) {
+      logger.error("QR code generation response with no body");
       return new byte[0];
     }
 
+    logger.debug("QR code retrieved: {}", response.getBody().getOutput());
     return response.getBody().getOutput();
   }
 }

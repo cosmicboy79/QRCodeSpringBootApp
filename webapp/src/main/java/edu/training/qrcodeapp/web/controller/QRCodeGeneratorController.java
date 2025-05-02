@@ -27,6 +27,8 @@ package edu.training.qrcodeapp.web.controller;
 import edu.training.qrcodeapp.model.InputData;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
 import java.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +41,8 @@ import org.springframework.web.bind.annotation.PostMapping;
  */
 @Controller
 public class QRCodeGeneratorController {
+
+  private final Logger logger = LoggerFactory.getLogger(QRCodeGeneratorController.class);
 
   // Model attribute for the generated QR code as array of bytes
   private static final String QRCODE_BYTES = "qrcodeBytes";
@@ -66,6 +70,8 @@ public class QRCodeGeneratorController {
   public String showPage(Model model) {
 
     if (qrCodeClient.isReady()) {
+
+      logger.info("Warning that Backend is not ready to use");
 
       model.addAttribute(INPUT_MODEL, new InputData());
       model.addAttribute(SHOW_MAIN_PAGE, true);
@@ -107,6 +113,8 @@ public class QRCodeGeneratorController {
    */
   @PostMapping(value = "/generate", params = "action=Clear")
   public String clearPage(Model model) {
+
+    logger.debug("Cleaning up the page");
 
     model.addAttribute(INPUT_MODEL, new InputData());
     model.addAttribute(SHOW_MAIN_PAGE, true);
