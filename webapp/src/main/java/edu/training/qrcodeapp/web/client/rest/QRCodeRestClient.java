@@ -29,6 +29,7 @@ import edu.training.qrcodeapp.model.InputData;
 import edu.training.qrcodeapp.model.Status;
 import edu.training.qrcodeapp.model.Status.StatusEnum;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
+import edu.training.qrcodeapp.web.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +46,14 @@ import org.springframework.web.client.RestTemplate;
 public class QRCodeRestClient implements QRCodeClient {
 
   // TODO put it as a property in the application file
-  private static final String BASE_REST_APP_URL = "http://localhost:9090/api/v1/qrcode";
+  private static final String BASE_REST_APP_URL = "/api/v1/qrcode";
   private static final String GENERATE = BASE_REST_APP_URL + "/generate";
   private static final String HEALTH = BASE_REST_APP_URL + "/health";
+
   private final Logger logger = LoggerFactory.getLogger(QRCodeRestClient.class);
-  
+
+  @Autowired
+  private AppConfig appConfig;
   @Autowired
   private RestTemplateBuilder restTemplateBuilder;
 
@@ -63,7 +67,8 @@ public class QRCodeRestClient implements QRCodeClient {
     try {
 
       RestTemplate restTemplate = restTemplateBuilder.build();
-      status = restTemplate.getForEntity(HEALTH, Status.class).getBody();
+      status = restTemplate.getForEntity(resolveFullAddress(HEALTH), Status.class)
+          .getBody();
     }
     catch (RestClientException e) {
       logger.error("Backend is not up and running: {}", e.getMessage());
@@ -87,7 +92,7 @@ public class QRCodeRestClient implements QRCodeClient {
     RestTemplate restTemplate = restTemplateBuilder.build();
 
     ResponseEntity<BytesArray> response = restTemplate.postForEntity(
-        GENERATE,
+        resolveFullAddress(GENERATE),
         inputData, BytesArray.class);
 
     if (response.getBody() == null) {
@@ -97,5 +102,10 @@ public class QRCodeRestClient implements QRCodeClient {
 
     logger.debug("QR code retrieved: {}", response.getBody().getOutput());
     return response.getBody().getOutput();
+  }
+
+  private String resolveFullAddress(String operation) {
+
+    return appConfig.getBackendAddress() + operation;
   }
 }
