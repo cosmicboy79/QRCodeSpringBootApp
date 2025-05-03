@@ -42,8 +42,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class QRCodeGeneratorController {
 
-  private final Logger logger = LoggerFactory.getLogger(QRCodeGeneratorController.class);
-
   // Model attribute for the generated QR code as array of bytes
   private static final String QRCODE_BYTES = "qrcodeBytes";
   // Model attribute for the input information for QR code generation
@@ -54,7 +52,7 @@ public class QRCodeGeneratorController {
   private static final String SHOW_QR_CODE = "showQrCode";
   // Model attribute with the name of the main page
   private static final String MAIN_PAGE = "qrcode";
-
+  private final Logger logger = LoggerFactory.getLogger(QRCodeGeneratorController.class);
   @Autowired
   QRCodeClient qrCodeClient;
 
@@ -108,18 +106,13 @@ public class QRCodeGeneratorController {
   /**
    * Operation posted for cleaning the main page's form.
    *
-   * @param model Holder for attributes used in the page
    * @return Main page
    */
   @PostMapping(value = "/generate", params = "action=Clear")
-  public String clearPage(Model model) {
+  public String clearPage() {
 
     logger.debug("Cleaning up the page");
 
-    model.addAttribute(INPUT_MODEL, new InputData());
-    model.addAttribute(SHOW_MAIN_PAGE, true);
-    model.addAttribute(SHOW_QR_CODE, false);
-
-    return MAIN_PAGE;
+    return "redirect:" + MAIN_PAGE;
   }
 }
