@@ -31,18 +31,20 @@
   </head>
   <body>
     <div th:if="${showMainPage}">
-      <form style="width:80%" action="#" th:action="@{/generate}" th:object="${inputData}" method="post" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
+      <form style="width:80%" action="#" th:action="@{/generate}" th:object="${inputDataForm}" method="post" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
         <h2 class="w3-center">QR Code Generator Web App</h2>
         <div class="w3-section">
           <div class="w3-cell-row">
             <label style="width:10%" class="w3-cell" th:text="URL" />
             <input style="width:90%" th:field="*{url}" class="w3-cell w3-input w3-border" name="url" type="text">
+            <div style="color:red" th:if="${#fields.hasErrors('url')}" th:errors="*{url}" />
           </div>
         </div>
         <div class="w3-section">
           <div class="w3-cell-row">
             <label style="width:10%" class="w3-cell" th:text="Size" />
             <input style="width:10%" th:field="*{size}" class="w3-cell w3-input w3-border" name="size" type="number">
+            <div style="color:red" th:if="${#fields.hasErrors('size')}" th:errors="*{size}" />
           </div>
         </div>
         <p class="w3-center">
@@ -50,10 +52,19 @@
           <input class="w3-button w3-section w3-blue w3-ripple" type="submit" name="action" value="Clear"/>
         </p>
       </form>
-      <div th:if="${showQrCode}" style="width:40%" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
-        <label th:text="'QR Code'" />
-        <br /><br />
-        <img th:src="${qrcodeBytes}" src="#" />
+      <div th:if="${showQrCode}" style="width:45%" class="w3-container w3-card-4 w3-light-grey w3-text-blue w3-margin">
+        <table>
+          <tr>
+            <td style="padding-top: 5px; padding-bottom: 5px;">
+              <label th:text="'Generated QR Code'" />
+            </td>
+          </tr>
+          <tr>
+            <td style="padding-top: 10px; padding-bottom: 15px; padding-right: 15px">
+              <img th:src="${qrcodeBytes}" src="#" />
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
 

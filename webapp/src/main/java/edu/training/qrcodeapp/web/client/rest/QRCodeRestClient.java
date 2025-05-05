@@ -45,7 +45,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class QRCodeRestClient implements QRCodeClient {
 
-  // TODO put it as a property in the application file
   private static final String BASE_REST_APP_URL = "/api/v1/qrcode";
   private static final String GENERATE = BASE_REST_APP_URL + "/generate";
   private static final String HEALTH = BASE_REST_APP_URL + "/health";
@@ -85,17 +84,26 @@ public class QRCodeRestClient implements QRCodeClient {
   }
 
   @Override
-  public byte[] getQRCode(InputData inputData) {
+  public byte[] getQRCode(String url, Integer size) {
 
-    logger.debug("Getting QR code for the given input: {}", inputData.toJson());
+    logger.debug("Getting QR code for the given input: {}", url);
 
     RestTemplate restTemplate = restTemplateBuilder.build();
+
+    InputData inputData = new InputData();
+    inputData.setUrl(url);
+
+    if (size != null) {
+
+      inputData.setSize(size);
+    }
 
     ResponseEntity<BytesArray> response = restTemplate.postForEntity(
         resolveFullAddress(GENERATE),
         inputData, BytesArray.class);
 
     if (response.getBody() == null) {
+
       logger.error("QR code generation response with no body");
       return new byte[0];
     }
