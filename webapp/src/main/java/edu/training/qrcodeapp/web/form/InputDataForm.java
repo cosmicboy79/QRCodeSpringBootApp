@@ -22,34 +22,37 @@
  * SOFTWARE.
  */
 
-package edu.training.qrcodeapp.web.client.rest;
+package edu.training.qrcodeapp.web.form;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import edu.training.qrcodeapp.model.InputData;
-import edu.training.qrcodeapp.web.client.QRCodeClient;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
- * TODO for now, unit test is ignored
+ * POJO used in the view form to get input data.
  */
-@SpringBootTest
-public class TestQRCodeRestClient {
+@ToString
+@EqualsAndHashCode
+public class InputDataForm {
 
-  @Autowired
-  QRCodeClient qrCodeClient;
+  @NotNull(message = "URL must not be null")
+  @NotBlank(message = "URL must not be empty or blank")
+  @Pattern(regexp = "^(http|https)://.*", message = "URL must start with either http:// or https://")
+  @Size(min = 1, max = 255, message = "URL size must be between 1 and 255 characters")
+  @Getter
+  @Setter
+  private String url;
 
-  //@Test
-  public void basicTest() {
-
-    InputData inputData = new InputData();
-    inputData.setUrl("https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf");
-    byte[] result = qrCodeClient.getQRCode(inputData.getUrl(), inputData.getSize());
-
-    assertNotNull(result);
-    assertThat(result.length > 0);
-  }
+  @Min(value = 100, message = "Size must not be less than 100")
+  @Max(value = 500, message = "Size must not be bigger than 500")
+  @Getter
+  @Setter
+  private Integer size;
 }

@@ -24,16 +24,17 @@
 
 package edu.training.qrcodeapp.web.controller;
 
-import edu.training.qrcodeapp.model.InputData;
 import edu.training.qrcodeapp.web.client.QRCodeClient;
+import edu.training.qrcodeapp.web.form.InputDataForm;
+import jakarta.validation.Valid;
 import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 /**
@@ -65,18 +66,19 @@ public class QRCodeGeneratorController {
    * @return Main page
    */
   @GetMapping("/qrcode")
-  public String showPage(Model model) {
+  public String showPage(InputDataForm inputDataForm, Model model) {
 
     if (qrCodeClient.isReady()) {
 
-      logger.info("Warning that Backend is not ready to use");
+      logger.debug("Backend is ready to use");
 
-      model.addAttribute(INPUT_MODEL, new InputData());
       model.addAttribute(SHOW_MAIN_PAGE, true);
       model.addAttribute(SHOW_QR_CODE, false);
 
       return MAIN_PAGE;
     }
+
+    logger.info("Warning that Backend is not ready to use");
 
     model.addAttribute(SHOW_MAIN_PAGE, false);
     return MAIN_PAGE;
@@ -85,19 +87,25 @@ public class QRCodeGeneratorController {
   /**
    * Operation posted for QR code generation, based on the data inputted in the main page's form.
    *
-   * @param model     Holder for attributes used in the page
-   * @param inputData Input information for QR code generation
+   * @param inputDataForm Input information for QR code generation
+   * @param bindingResult Injected instance related to form validation
+   * @param model         Holder for attributes used in the page
    * @return Main page
    */
   @PostMapping(value = "/generate", params = "action=Send")
-  public String generateQRCode(Model model, @ModelAttribute(INPUT_MODEL) InputData inputData) {
+  public String generateQRCode(@Valid InputDataForm inputDataForm, BindingResult bindingResult,
+      Model model) {
 
-    byte[] result = qrCodeClient.getQRCode(inputData);
+    model.addAttribute(SHOW_MAIN_PAGE, true);
+
+    if (bindingResult.hasErrors()) {
+      return MAIN_PAGE;
+    }
+
+    byte[] result = qrCodeClient.getQRCode(inputDataForm.getUrl(), inputDataForm.getSize());
 
     model.addAttribute(QRCODE_BYTES,
         "data:image/png;base64," + Base64.getEncoder().encodeToString(result));
-    model.addAttribute(INPUT_MODEL, inputData);
-    model.addAttribute(SHOW_MAIN_PAGE, true);
     model.addAttribute(SHOW_QR_CODE, true);
 
     return MAIN_PAGE;
