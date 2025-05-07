@@ -41,7 +41,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Unit tests for {@link ZXingBasedGeneratorServiceImpl}
+ * Unit tests for {@link ZXingBasedGeneratorServiceImpl}.
  */
 @ExtendWith(MockitoExtension.class)
 public class TestZXingBasedQRCodeGeneratorServiceImpl {

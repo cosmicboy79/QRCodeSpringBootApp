@@ -44,16 +44,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class QRCodeGeneratorController {
 
   // Model attribute for the generated QR code as array of bytes
-  private static final String QRCODE_BYTES = "qrcodeBytes";
-  // Model attribute for the input information for QR code generation
-  private static final String INPUT_MODEL = "inputData";
+  static final String QRCODE_BYTES = "qrcodeBytes";
   // Model boolean attribute to show or not the main page's form
-  private static final String SHOW_MAIN_PAGE = "showMainPage";
+  static final String SHOW_MAIN_PAGE = "showMainPage";
   // Model boolean attribute to display or not the QR code image
-  private static final String SHOW_QR_CODE = "showQrCode";
+  static final String SHOW_QR_CODE = "showQrCode";
   // Model attribute with the name of the main page
-  private static final String MAIN_PAGE = "qrcode";
+  static final String MAIN_PAGE = "qrcode";
+
+  // Main page's entry point name
+  static final String MAIN_ENTRY_POINT = "/qrcode";
+  // Entry point related to the form's action to generate QR code
+  static final String GENERATE_ENTRY_POINT = "/generate";
+  // Form's submit button name
+  static final String SUBMIT_BUTTON_NAME = "action";
+  // Form's submit button to clean up its fields
+  static final String SUBMIT_CLEAR = "Clear";
+  // Form's submit button to send data for QR code generation
+  static final String SUBMIT_SEND = "Send";
+
   private final Logger logger = LoggerFactory.getLogger(QRCodeGeneratorController.class);
+
   @Autowired
   QRCodeClient qrCodeClient;
 
@@ -65,7 +76,7 @@ public class QRCodeGeneratorController {
    * @param model Holder for attributes used in the page
    * @return Main page
    */
-  @GetMapping("/qrcode")
+  @GetMapping(MAIN_ENTRY_POINT)
   public String showPage(InputDataForm inputDataForm, Model model) {
 
     if (qrCodeClient.isReady()) {
@@ -92,7 +103,7 @@ public class QRCodeGeneratorController {
    * @param model         Holder for attributes used in the page
    * @return Main page
    */
-  @PostMapping(value = "/generate", params = "action=Send")
+  @PostMapping(value = GENERATE_ENTRY_POINT, params = SUBMIT_BUTTON_NAME + "=" + SUBMIT_SEND)
   public String generateQRCode(@Valid InputDataForm inputDataForm, BindingResult bindingResult,
       Model model) {
 
@@ -116,8 +127,8 @@ public class QRCodeGeneratorController {
    *
    * @return Main page
    */
-  @PostMapping(value = "/generate", params = "action=Clear")
-  public String clearPage() {
+  @PostMapping(value = GENERATE_ENTRY_POINT, params = SUBMIT_BUTTON_NAME + "=" + SUBMIT_CLEAR)
+  public String clearForm() {
 
     logger.debug("Cleaning up the page");
 

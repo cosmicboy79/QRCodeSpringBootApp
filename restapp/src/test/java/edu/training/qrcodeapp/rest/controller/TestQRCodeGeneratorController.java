@@ -46,15 +46,20 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
- * Unit tests for {@link QRCodeGeneratorController}
+ * Basic tests for {@link QRCodeGeneratorController}.
+ * <p>
+ * There is mocking but the application context is loaded, so this should be,
+ * technically, considered as integration tests. However, it will for now run as "unit tests".
  */
-@WebMvcTest(controllers = QRCodeGeneratorController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class TestQRCodeGeneratorController {
 
   private static final String BASE_PATH = "/api/v1/qrcode";
@@ -63,8 +68,10 @@ public class TestQRCodeGeneratorController {
 
   @MockitoBean
   QRCodeGeneratorService generatorService;
+
   @Captor
   ArgumentCaptor<String> inputUrlArgumentCaptor;
+
   @Autowired
   private MockMvc mockMvc;
 
