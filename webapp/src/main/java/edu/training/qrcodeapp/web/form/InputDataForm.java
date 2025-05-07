@@ -26,7 +26,6 @@ package edu.training.qrcodeapp.web.form;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -42,8 +41,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class InputDataForm {
 
-  @NotNull(message = "URL must not be null")
-  @NotBlank(message = "URL must not be empty or blank")
+  @NotNull(message = "URL must not be empty or blank")
   @Pattern(regexp = "^(http|https)://.*", message = "URL must start with either http:// or https://")
   @Size(min = 1, max = 255, message = "URL size must be between 1 and 255 characters")
   @Getter

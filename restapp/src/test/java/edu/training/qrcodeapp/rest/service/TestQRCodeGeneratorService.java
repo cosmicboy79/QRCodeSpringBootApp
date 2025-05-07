@@ -37,7 +37,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * Basic unit tests for implementations of interface {@link QRCodeGeneratorService}
+ * Basic tests for implementations of interface {@link QRCodeGeneratorService}.
+ * <p>
+ * Since the application context is loaded and there is no mocking, this should be
+ * considered as integration tests. However, it will for now run as "unit tests".
  */
 @SpringBootTest
 public class TestQRCodeGeneratorService {
