@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,6 +61,7 @@ public class QRCodeGeneratorController {
    *
    * @return Health status encapsulated as {@link ResponseEntity}
    */
+  @CrossOrigin(origins = "*")
   @GetMapping("/health")
   public ResponseEntity<Status> getHealthStatus() {
 
@@ -85,6 +87,7 @@ public class QRCodeGeneratorController {
    * @param inputData Input data sent in the body of the request
    * @return {@link ResponseEntity} containing either the correct data or error information
    */
+  @CrossOrigin(origins = "*")
   @PostMapping("/generate")
   public ResponseEntity<?> generateQRCode(@RequestBody InputData inputData) {
 
