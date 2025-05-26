@@ -25,6 +25,25 @@ dependencies {
     api libs.com.squareup.okhttp3.logging.interceptor
     api libs.io.gsonfire.gson.fire
     api libs.javax.annotation.javax.annotation.api
+
+    implementation("javax.ws.rs:javax.ws.rs-api:2.0")
 }
 
 description = 'Open API specification for the REST layer of the QR Code App'
+
+openApiGenerate {
+    generatorName.set("java")
+    inputSpec.set("$rootDir/openapi-spec/src/main/resources/openapi-spec.yaml")
+    outputDir.set("$buildDir/generated/")
+    modelPackage.set("edu.training.qrcodeapp.model")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("$buildDir/generated/src/main")
+        }
+    }
+}
+
+compileJava.dependsOn tasks.openApiGenerate
