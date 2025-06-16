@@ -10,7 +10,7 @@ plugins {
 }
 
 dependencies {
-    api project(':openapi-spec')
+    implementation project(':openapi-spec')
     api libs.org.springframework.boot.spring.boot.starter.validation
     api libs.org.springframework.boot.spring.boot.starter.web
     api libs.org.springframework.boot.spring.boot.starter.thymeleaf
