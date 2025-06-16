@@ -4,6 +4,9 @@
 
 plugins {
     id 'buildlogic.java-conventions'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'java'
 }
 
 dependencies {
@@ -19,3 +22,7 @@ dependencies {
 }
 
 description = 'Web Application'
+
+springBoot {
+    mainClass = 'edu.training.qrcodeapp.web.QRCodeGeneratorWebApp'
+}

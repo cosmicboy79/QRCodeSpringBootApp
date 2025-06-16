@@ -14,9 +14,8 @@ buildscript {
 
 plugins {
     id 'buildlogic.java-conventions'
+    id 'org.openapi.generator' version '7.12.0'
 }
-
-apply plugin: 'org.openapi.generator'
 
 dependencies {
     api libs.com.google.code.findbugs.jsr305

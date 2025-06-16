@@ -16,7 +16,7 @@ See below details on how to start each of them.
 This project uses [Maven](https://maven.apache.org/what-is-maven.html)
 as build tool.
 
-In order to build it, just do the well-known:
+In order to build it, just run the well-known Maven command:
 
 ```
 mvn clean install
@@ -28,6 +28,12 @@ To build without executing automated tests:
 mvn clean install -DskipTests
 ```
 
+Alternatively, Gradle can also be used:
+
+```
+gradle clean build
+```
+
 Java 21 is used for this project.
 
 ## Starting Spring Boot REST Application
@@ -37,6 +43,12 @@ in the project's root directory:
 
 ```
 mvn -pl restapp spring-boot:run
+```
+
+Alternatively, the following Gradle command can also be used:
+
+```
+gradle :restapp:bootRun
 ```
 
 The following REST operations, as defined in the OpenAPI specification,
@@ -52,6 +64,12 @@ in the project's root directory:
 
 ```
 mvn -pl webapp spring-boot:run
+```
+
+Alternatively, the following Gradle command can also be used:
+
+```
+gradle :webapp:bootRun
 ```
 
 Open the browser and go to the following address:
