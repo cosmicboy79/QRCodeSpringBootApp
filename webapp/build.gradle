@@ -21,6 +21,14 @@ dependencies {
     annotationProcessor libs.org.projectlombok.lombok
 }
 
+test {
+    useJUnitPlatform()
+    include '**/Test*.class'
+    testLogging {
+        events "started", "passed", "failed", "skipped"
+    }
+}
+
 description = 'Web Application'
 
 springBoot {

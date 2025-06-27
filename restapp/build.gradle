@@ -18,6 +18,14 @@ dependencies {
     testImplementation libs.org.springframework.boot.spring.boot.starter.test
 }
 
+test {
+    useJUnitPlatform()
+    include '**/Test*.class'
+    testLogging {
+        events "started", "passed", "failed", "skipped"
+    }
+}
+
 description = 'REST layer'
 
 springBoot {
